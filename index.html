@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriSemáforo - Catálogo Completo</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --primary: #0284c7;
+        }
+
+        html, body {
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .app-container {
+            width: 100vw;
+            height: 100vh;
+            background: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        header p {
+            margin: 3px 0 0 0;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 15px;
+            flex: 1;
+            overflow-y: auto; /* Permite hacer scroll vertical en la lista larga */
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        .grid-snacks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding-bottom: 20px;
+        }
+
+        .snack-btn {
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            padding: 12px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .snack-btn:hover {
+            background: #e0f2fe;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .snack-btn .icon {
+            font-size: 1.6rem;
+            margin-bottom: 4px;
+        }
+
+        /* Pantalla de Resultados */
+        .result-view-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .result-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .semaforo-indicator {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .rojo { background-color: #ef4444; }
+        .amarillo { background-color: #f59e0b; }
+        .verde { background-color: #10b981; }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .badge.rojo { background-color: #ef4444; }
+        .badge.amarillo { background-color: #f59e0b; }
+        .badge.verde { background-color: #10b981; }
+
+        .info-box {
+            text-align: left;
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            line-height: 1.35;
+        }
+
+        .info-box h4 {
+            margin: 0 0 3px 0;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .back-btn {
+            background: #e2e8f0;
+            border: none;
+            color: #334155;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            margin-top: 10px;
+            flex-shrink: 0;
+        }
+
+        .back-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- ENCABEZADO -->
+        <header>
+            <h1>NutriSemáforo</h1>
+            <p>Ciencia y nutrición en pantalla completa</p>
+        </header>
+
+        <!-- CONTENIDO -->
+        <div class="content">
+            
+            <!-- VISTA SELECCIÓN -->
+            <div id="selection-view" style="height: 100%; display: flex; flex-direction: column;">
+                <div class="section-title">Elige un producto (Muchos snacks y comidas):</div>
+                
+                <div class="grid-snacks" id="grid-snacks-container">
+                    <!-- Se inyectan dinámicamente con JS para mantenerlo ordenado -->
+                </div>
+            </div>
+
+            <!-- VISTA RESULTADO -->
+            <div id="result-view" class="hidden result-view-container">
+                <div class="result-card">
+                    <div id="semaforo-icon" class="semaforo-indicator rojo">🛑</div>
+                    <div class="result-title" id="res-nombre">Nombre del Snack</div>
+                    <div id="res-badge" class="badge rojo">ALTO EN AZÚCAR / GRASA</div>
+
+                    <div class="info-box">
+                        <h4>⚡ Efecto en tu energía:</h4>
+                        <p id="res-energia">Explicación de la energía...</p>
+                    </div>
+
+                    <div class="info-box" style="border-left-color: #10b981;">
+                        <h4>🔬 La Ciencia detrás:</h4>
+                        <p id="res-ciencia">Explicación biológica...</p>
+                    </div>
+                </div>
+
+                <button class="back-btn" onclick="volverSeleccion()">← Elegir otro snack</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const baseDatosSnacks = {
+            gaseosa: {
+                nombre: "Gaseosa Regular (500ml)",
+                nivel: "rojo",
+                textoNivel: "ALTO EN AZÚCAR REFINADA",
+                icono: "🥤",
+                energia: "Pico rápido de energía seguido de un bajón brusco que causa fatiga en clase.",
+                ciencia: "La fructosa líquida satura el hígado y provoca una descarga masiva de insulina, generando hipoglucemia temporal."
+            },
+            papas: {
+                nombre: "Papas Fritas de Bolsa",
+                nivel: "rojo",
+                textoNivel: "ALTO EN SODIO Y GRASAS",
+                icono: "🍟",
+                energia: "Digestión lenta que genera pesadez y reduce la concentración mental.",
+                ciencia: "Las grasas saturadas fuerzan al sistema digestivo y provocan leve inflamación sistémica temporal."
+            },
+            galletas: {
+                nombre: "Galletas Rellenas",
+                nivel: "rojo",
+                textoNivel: "ALTO EN AZÚCAR Y GRASAS TRANS",
+                icono: "🍪",
+                energia: "Impulso de dopamina fugaz que genera antojos repetitivos rápidos.",
+                ciencia: "Estimulan los circuitos de recompensa del cerebro de forma muy intensa por su combinación de grasa y azúcar."
+            },
+            manzana: {
+                nombre: "Manzana Fresca",
+                nivel: "verde",
+                textoNivel: "100% NATURAL Y NUTRITIVA",
+                icono: "🍎",
+                energia: "Energía estable y sostenida por horas para mantener el cerebro activo.",
+                ciencia: "La pectina (fibra) enlentece la absorción de la fructosa, evitando picos de glucosa."
+            },
+            yogurt: {
+                nombre: "Yogurt Comercial Azucarado",
+                nivel: "amarillo",
+                textoNivel: "MODERADO (Azúcares añadidos)",
+                icono: "🥛",
+                energia: "Aporta proteínas pero el jarabe añadido acelera la glucosa.",
+                ciencia: "Aporta probióticos buenos para la microbiota, aunque el azúcar refinada resta parte de su beneficio."
+            },
+            chubby: {
+                nombre: "Néctar en Caja",
+                nivel: "rojo",
+                textoNivel: "ALTO EN AZÚCAR Y ADITIVOS",
+                icono: "🧃",
+                energia: "Falsa sensación saludable que termina causando el mismo bajón que una gaseosa.",
+                ciencia: "Al carecer de la fibra de la fruta original, el azúcar pasa directo a la sangre."
+            },
+            papa_rellena: {
+                nombre: "Papa Rellena / Rebozada",
+                nivel: "rojo",
+                textoNivel: "ALTO EN GRASAS FRITAS Y CARBOHIDRATOS",
+                icono: "🥔",
+                energia: "Aporte calórico muy denso que enlentece la actividad cerebral tras almorzar.",
+                ciencia: "El aceite absorbido a alta temperatura se descompone en ácidos grasos oxidados que exigen más al metabolismo."
+            },
+            queque: {
+                nombre: "Queque Casero o Industrial",
+                nivel: "rojo",
+                textoNivel: "ALTO EN HARINAS REFINADAS Y AZÚCAR",
+                icono: "🥮",
+                energia: "Subidón inmediato de glucosa seguido de somnolencia.",
+                ciencia: "La combinación de harina blanca refinada y azúcar eleva drásticamente la carga glucémica."
+            },
+            chifles: {
+                nombre: "Chifles (Plátanos Fritos)",
+                nivel: "rojo",
+                textoNivel: "ALTO EN GRASAS Y SODIO",
+                icono: "🍌",
+                energia: "Aporte rápido de calorías fritas que saturan la digestión.",
+                ciencia: "El plátano pierde agua al freírse y absorbe grasas vegetales modificadas por el calor intenso."
+            },
+            salchipapa: {
+                nombre: "Salchipapa Escolar",
+                nivel: "rojo",
+                textoNivel: "ALTO EN GRASAS SATURADAS Y SODIO",
+                icono: "🌭",
+                energia: "Digestión pesada que quita agilidad mental y concentración.",
+                ciencia: "Embutidos ultraprocesados con alto contenido de sodio que alteran la presión arterial transitoriamente."
+            },
+            platano: {
+                nombre: "Plátano de Seda (Fruta)",
+                nivel: "verde",
+                textoNivel: "IDEAL PARA ENERGÍA FÍSICA",
+                icono: "🍌",
+                energia: "Excelente recarga de potasio y carbohidratos limpios para el deporte o estudio.",
+                ciencia: "Aporta azúcares naturales acompañados de potasio, fundamental para la contracción muscular y sinapsis."
+            },
+            agua: {
+                nombre: "Agua Pura",
+                nivel: "verde",
+                textoNivel: "ESENCIAL PARA LA VIDA",
+                icono: "💧",
+                energia: "Mantiene la hidratación celular óptima sin alterar el metabolismo.",
+                ciencia: "El cerebro humano es un 75% agua; mantenerlo hidratado previene la fatiga mental y cefaleas."
+            }
+        };
+
+        // Generar los botones automáticamente en la cuadrícula
+        const container = document.getElementById('grid-snacks-container');
+        for (const [id, data] of Object.entries(baseDatosSnacks)) {
+            const btn = document.createElement('div');
+            btn.className = 'snack-btn';
+            btn.onclick = () => mostrarSnack(id);
+            btn.innerHTML = `<span class="icon">${data.icono}</span><span>${data.nombre.split(' ')[0]}...</span>`.replace('...', '');
+            // Mejor texto visual para el botón
+            btn.innerHTML = `<span class="icon">${data.icono}</span><span style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:100%;">${data.nombre}</span>`;
+            container.appendChild(btn);
+        }
+
+        function mostrarSnack(id) {
+            const data = baseDatosSnacks[id];
+            if (!data) return;
+
+            document.getElementById('res-nombre').innerText = data.nombre;
+            document.getElementById('res-energia').innerText = data.energia;
+            document.getElementById('res-ciencia').innerText = data.ciencia;
+
+            const semaforoIcon = document.getElementById('semaforo-icon');
+            const resBadge = document.getElementById('res-badge');
+
+            semaforoIcon.className = 'semaforo-indicator ' + data.nivel;
+            resBadge.className = 'badge ' + data.nivel;
+
+            semaforoIcon.innerText = data.icono;
+            resBadge.innerText = data.textoNivel;
+
+            document.getElementById('selection-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+        }
+
+        function volverSeleccion() {
+            document.getElementById('result-view').classList.add('hidden');
+            document.getElementById('selection-view').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
