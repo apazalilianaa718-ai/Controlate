@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriDash - Simulador y Reto Flash</title>
+    <title>NutriDash - Feria de Ciencia</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -23,6 +23,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--text);
+            overflow: hidden;
         }
 
         .app-container {
@@ -34,27 +35,53 @@
             box-sizing: border-box;
             max-width: 480px;
             margin: 0 auto;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
         }
 
         header {
             background: linear-gradient(135deg, #0284c7, #2563eb);
             color: white;
-            padding: 14px 20px;
+            padding: 12px 15px;
             text-align: center;
             flex-shrink: 0;
         }
 
         header h1 {
             margin: 0;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
         }
 
         header p {
             margin: 2px 0 0 0;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             opacity: 0.85;
+        }
+
+        /* Pestañas superiores para cambiar entre Simulador y Minijuegos */
+        .nav-tabs {
+            display: flex;
+            background: #0b1120;
+            padding: 6px;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #0f172a;
         }
 
         .content {
@@ -64,11 +91,10 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            gap: 12px;
         }
 
         .section-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: bold;
             color: var(--text-muted);
             margin-bottom: 6px;
@@ -81,16 +107,17 @@
             overflow-x: auto;
             padding-bottom: 4px;
             flex-shrink: 0;
+            margin-bottom: 10px;
         }
 
         .snack-chip {
             background: #334155;
             border: 2px solid transparent;
-            padding: 8px 12px;
-            border-radius: 20px;
+            padding: 6px 10px;
+            border-radius: 16px;
             white-space: nowrap;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             transition: all 0.2s;
         }
@@ -104,34 +131,33 @@
         /* Tarjeta de simulación */
         .sim-card {
             background: #0f172a;
-            border-radius: 14px;
-            padding: 12px;
+            border-radius: 12px;
+            padding: 10px;
             border: 1px solid #334155;
             text-align: center;
         }
 
         .sim-icon {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             margin-bottom: 2px;
         }
 
-        /* Barras de estado */
         .stat-group {
-            margin-top: 10px;
+            margin-top: 8px;
             text-align: left;
         }
 
         .stat-label {
             display: flex;
             justify-content: space-between;
-            font-size: 0.75rem;
-            margin-bottom: 3px;
+            font-size: 0.7rem;
+            margin-bottom: 2px;
             font-weight: bold;
         }
 
         .progress-bar-bg {
             width: 100%;
-            height: 8px;
+            height: 7px;
             background: #334155;
             border-radius: 4px;
             overflow: hidden;
@@ -140,43 +166,46 @@
         .progress-bar-fill {
             height: 100%;
             width: 0%;
-            transition: width 0.5s ease, background-color 0.5s;
+            transition: width 0.4s ease, background-color 0.4s;
         }
 
         .dynamic-info {
             background: #1e293b;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            line-height: 1.35;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            line-height: 1.3;
             border-left: 4px solid var(--primary);
             text-align: left;
             margin-top: 8px;
         }
 
-        /* Sección de Juego / Quiz */
-        .quiz-card {
+        /* Estilos de Juegos / Quiz */
+        .game-card {
             background: #0f172a;
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 12px;
             border: 1px solid #334155;
-            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
         }
 
-        .quiz-question {
-            font-size: 0.9rem;
+        .game-question {
+            font-size: 0.85rem;
             font-weight: bold;
             margin-bottom: 10px;
-            line-height: 1.35;
+            line-height: 1.3;
         }
 
-        .quiz-option {
+        .game-option {
             background: #334155;
             border: none;
             color: white;
             padding: 10px;
             border-radius: 8px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
             margin-bottom: 6px;
@@ -186,16 +215,16 @@
             box-sizing: border-box;
         }
 
-        .quiz-option:hover {
+        .game-option:hover {
             background: #475569;
         }
 
-        .quiz-option.correct {
+        .game-option.correct {
             background: var(--success) !important;
             color: #0f172a;
         }
 
-        .quiz-option.wrong {
+        .game-option.wrong {
             background: var(--accent) !important;
         }
 
@@ -205,12 +234,39 @@
             color: #0f172a;
             padding: 10px;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
             margin-top: 8px;
             display: none;
+        }
+
+        /* Batalla Nutricional Estilo */
+        .battle-arena {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .battle-card {
+            flex: 1;
+            background: #334155;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .battle-card:hover {
+            border-color: var(--primary);
+            background: #3b82f622;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -220,23 +276,28 @@
         <!-- ENCABEZADO -->
         <header>
             <h1>NutriDash ⚡ Lab</h1>
-            <p>Simulador Metabólico y Reto Científico</p>
+            <p>Simulador y Centro de Retos Científicos</p>
         </header>
+
+        <!-- NAVEGACIÓN TABS -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="cambiarVista('sim')">🧪 Simulador</button>
+            <button class="tab-btn" onclick="cambiarVista('quiz')">🎮 Trivia Flash</button>
+            <button class="tab-btn" onclick="cambiarVista('batalla')">⚔️ Batalla Sana</button>
+        </div>
 
         <!-- CONTENIDO -->
         <div class="content">
             
-            <!-- SECCIÓN 1: SIMULADOR -->
-            <div>
-                <div class="section-title">🧪 Selecciona un alimento o snack:</div>
-                <div class="snack-scroller" id="chips-container">
-                    <!-- Inyectado por JS -->
-                </div>
+            <!-- VISTA 1: SIMULADOR -->
+            <div id="vista-sim" style="display: flex; flex-direction: column; gap: 8px;">
+                <div class="section-title">Selecciona un alimento:</div>
+                <div class="snack-scroller" id="chips-container"></div>
 
                 <div class="sim-card">
                     <div class="sim-icon" id="sim-icon">🥤</div>
-                    <h2 id="sim-nombre" style="margin: 0 0 4px 0; font-size: 1rem;">Gaseosa Regular</h2>
-                    <span id="sim-tag" style="font-size: 0.7rem; padding: 2px 8px; border-radius: 8px; font-weight: bold; background: var(--accent); color: white;">ALTO IMPACTO</span>
+                    <h2 id="sim-nombre" style="margin: 0 0 3px 0; font-size: 0.95rem;">Gaseosa Regular</h2>
+                    <span id="sim-tag" style="font-size: 0.65rem; padding: 2px 6px; border-radius: 6px; font-weight: bold; background: var(--accent); color: white;">ALTO IMPACTO</span>
 
                     <div class="stat-group">
                         <div class="stat-label"><span>⚡ Picos de Glucosa</span><span id="val-glucosa">95%</span></div>
@@ -249,29 +310,52 @@
                     </div>
 
                     <div class="stat-group">
-                        <div class="stat-label"><span>🔥 Trabajo Hepático (Hígado)</span><span id="val-higado">90%</span></div>
+                        <div class="stat-label"><span>🔥 Trabajo Hepático</span><span id="val-higado">90%</span></div>
                         <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-higado"></div></div>
                     </div>
                 </div>
 
-                <div class="dynamic-info" id="sim-ciencia">
-                    Cargando análisis...
+                <div class="dynamic-info" id="sim-ciencia">Cargando análisis...</div>
+            </div>
+
+            <!-- VISTA 2: TRIVIA FLASH (Preguntas Variadas) -->
+            <div id="vista-quiz" class="hidden" style="display: none; flex-direction: column; flex: 1;">
+                <div class="game-card">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px;">
+                            <span id="quiz-counter">Pregunta 1/4</span>
+                            <span id="quiz-score">Puntaje: 0 pts</span>
+                        </div>
+                        <div class="game-question" id="quiz-pregunta">Pregunta...</div>
+                        <div id="quiz-options"></div>
+                    </div>
+                    <button class="action-btn" id="quiz-next-btn" onclick="siguientePreguntaQuiz()">Siguiente Pregunta →</button>
                 </div>
             </div>
 
-            <!-- SECCIÓN 2: JUEGO / RETO FLASH -->
-            <div>
-                <div class="section-title">🎮 Reto Flash (Demuestra lo que sabes):</div>
-                <div class="quiz-card">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">
-                        <span id="quiz-counter">Pregunta 1/3</span>
-                        <span id="quiz-score">Puntaje: 0 pts</span>
+            <!-- VISTA 3: MINIJUEGO BATALLA NUTRICIONAL -->
+            <div id="vista-batalla" class="hidden" style="display: none; flex-direction: column; flex: 1;">
+                <div class="game-card">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px;">
+                            <span id="batalla-counter">Reto 1/3</span>
+                            <span id="batalla-score">Puntaje: 0 pts</span>
+                        </div>
+                        <div class="game-question" id="batalla-pregunta" style="text-align: center; margin-bottom: 12px;">¿Cuál de estos dos alimentos es más saludable para tu cerebro?</div>
+                        
+                        <div class="battle-arena">
+                            <div class="battle-card" id="card-A" onclick="elegirBatalla('A')">
+                                <div id="bat-icon-A" style="font-size: 2rem; margin-bottom: 4px;">🍎</div>
+                                <div id="bat-name-A" style="font-size: 0.75rem; font-weight: bold;">Manzana</div>
+                            </div>
+                            <div class="battle-card" id="card-B" onclick="elegirBatalla('B')">
+                                <div id="bat-icon-B" style="font-size: 2rem; margin-bottom: 4px;">🥤</div>
+                                <div id="bat-name-B" style="font-size: 0.75rem; font-weight: bold;">Gaseosa</div>
+                            </div>
+                        </div>
+                        <div id="batalla-feedback" style="font-size: 0.75rem; text-align: center; min-height: 25px; color: var(--primary); font-weight: bold;"></div>
                     </div>
-                    <div class="quiz-question" id="quiz-pregunta">Cargando pregunta...</div>
-                    <div id="quiz-options">
-                        <!-- Opciones del juego -->
-                    </div>
-                    <button class="action-btn" id="quiz-next-btn" onclick="siguientePregunta()">Siguiente Pregunta →</button>
+                    <button class="action-btn" id="batalla-next-btn" onclick="siguienteBatalla()">Siguiente Reto →</button>
                 </div>
             </div>
 
@@ -279,61 +363,20 @@
     </div>
 
     <script>
-        // Gran base de datos de alimentos y snacks
+        // --- 1. DATOS DEL SIMULADOR ---
         const simData = {
-            gaseosa: {
-                nombre: "Gaseosa Regular (500ml)", icono: "🥤", tag: "ALTO IMPACTO", tagColor: "var(--accent)",
-                glucosa: 95, mente: 20, higado: 90,
-                ciencia: "⚠️ <strong>Alerta Metabólica:</strong> La avalancha de fructosa líquida satura el hígado, convirtiendo el exceso en grasa y causando un bajón de energía cerebral."
-            },
-            papas: {
-                nombre: "Papas Fritas de Bolsa", icono: "🍟", tag: "GRASAS PESADAS", tagColor: "var(--warning)",
-                glucosa: 60, mente: 30, higado: 75,
-                ciencia: "🍟 <strong>Digestión Lenta:</strong> Las grasas fritas desvían flujo sanguíneo del cerebro hacia el estómago, generando pesadez en clase."
-            },
-            salchipapa: {
-                nombre: "Salchipapa Escolar", icono: "🌭", tag: "GRASAS Y SODIO", tagColor: "var(--accent)",
-                glucosa: 70, mente: 25, higado: 85,
-                ciencia: "🌭 <strong>Alta Carga:</strong> Embutidos ultraprocesados con sodio elevado que alteran la presión arterial temporalmente y fatigan el metabolismo."
-            },
-            queque: {
-                nombre: "Queque o Bizcocho", icono: "🥮", tag: "CARGA GLUCÉMICA", tagColor: "var(--accent)",
-                glucosa: 90, mente: 25, higado: 80,
-                ciencia: "⚡ <strong>Pico y Somnolencia:</strong> Harina refinada y azúcar elevan violentamente la insulina, provocando sueño a los 30 minutos."
-            },
-            galletas: {
-                nombre: "Galletas Rellenas / Casino", icono: "🍪", tag: "AZÚCAR Y GRASAS", tagColor: "var(--accent)",
-                glucosa: 85, mente: 30, higado: 75,
-                ciencia: "🍪 <strong>Estímulo de Dopamina:</strong> Combinación de azúcares y grasas trans que activan los centros de recompensa cerebral adictivos."
-            },
-            chifles: {
-                nombre: "Chifles (Plátanos Fritos)", icon: "🍌", tag: "CALORÍAS FRITAS", tagColor: "var(--warning)",
-                glucosa: 75, mente: 40, higado: 70,
-                ciencia: "🍌 <strong>Calorías Densas:</strong> El plátano pierde humedad al freírse y absorbe aceites vegetales que saturan la digestión."
-            },
-            chicha: {
-                nombre: "Chicha Morada Envasada", icono: "🧃", tag: "AZÚCAR OCULTA", tagColor: "var(--accent)",
-                glucosa: 85, mente: 35, higado: 80,
-                ciencia: "🧃 <strong>Falsa Salud:</strong> Aunque el maíz morado tiene antioxidantes (antocianinas), la versión envasada contiene exceso de azúcar refinada añadida."
-            },
-            manzana: {
-                nombre: "Manzana Fresca", icono: "🍎", tag: "ENERGÍA ESTABLE", tagColor: "var(--success)",
-                glucosa: 30, mente: 95, higado: 10,
-                ciencia: "✨ <strong>Equilibrio Celular:</strong> Gracias a la pectina (fibra), la glucosa se libera lentamente, manteniendo la sinapsis neuronal limpia."
-            },
-            platano: {
-                nombre: "Plátano de Seda", icono: "🍌", tag: "ENERGÍA NATURAL", tagColor: "var(--success)",
-                glucosa: 45, mente: 90, higado: 15,
-                ciencia: "🍌 <strong>Potasio y Energía:</strong> Carbohidratos limpios acompañados de potasio, ideal para la contracción muscular y la claridad mental."
-            },
-            agua: {
-                nombre: "Agua Pura", icono: "💧", tag: "HIDRATACIÓN ÓPTIMA", tagColor: "var(--success)",
-                glucosa: 0, mente: 100, higado: 0,
-                ciencia: "💧 <strong>Claridad Mental:</strong> Mantiene el volumen sanguíneo adecuado y la correcta transmisión de impulsos eléctricos entre neuronas."
-            }
+            gaseosa: { nombre: "Gaseosa Regular (500ml)", icono: "🥤", tag: "ALTO IMPACTO", tagColor: "var(--accent)", glucosa: 95, mente: 20, higado: 90, ciencia: "⚠️ <strong>Alerta Metabólica:</strong> La avalancha de fructosa líquida satura el hígado y provoca un bajón de energía cerebral." },
+            papas: { nombre: "Papas Fritas de Bolsa", icono: "🍟", tag: "GRASAS PESADAS", tagColor: "var(--warning)", glucosa: 60, mente: 30, higado: 75, ciencia: "🍟 <strong>Digestión Lenta:</strong> Desvía flujo sanguíneo del cerebro hacia el estómago, generando pesadez." },
+            salchipapa: { nombre: "Salchipapa Escolar", icono: "🌭", tag: "GRASAS Y SODIO", tagColor: "var(--accent)", glucosa: 70, mente: 25, higado: 85, ciencia: "🌭 <strong>Alta Carga:</strong> Embutidos con sodio elevado que alteran la presión arterial transitoriamente." },
+            queque: { nombre: "Queque Casero", icono: "🥮", tag: "CARGA GLUCÉMICA", tagColor: "var(--accent)", glucosa: 90, mente: 25, higado: 80, ciencia: "⚡ <strong>Pico y Somnolencia:</strong> Harina refinada y azúcar elevan violentamente la insulina." },
+            galletas: { nombre: "Galletas Casino", icono: "🍪", tag: "AZÚCAR Y GRASAS", tagColor: "var(--accent)", glucosa: 85, mente: 30, higado: 75, ciencia: "🍪 <strong>Estímulo de Dopamina:</strong> Grasas trans y azúcares que activan los circuitos de recompensa." },
+            chifles: { nombre: "Chifles (Plátanos Fritos)", icono: "🍌", tag: "CALORÍAS FRITAS", tagColor: "var(--warning)", glucosa: 75, mente: 40, higado: 70, ciencia: "🍌 <strong>Calorías Densas:</strong> El plátano frito absorbe aceites vegetales que saturan la digestión." },
+            manzana: { nombre: "Manzana Fresca", icono: "🍎", tag: "ENERGÍA ESTABLE", tagColor: "var(--success)", glucosa: 30, mente: 95, higado: 10, ciencia: "✨ <strong>Equilibrio Celular:</strong> La pectina (fibra) libera la glucosa lentamente, manteniendo la sinapsis." },
+            platano: { nombre: "Plátano de Seda", icono: "🍌", tag: "ENERGÍA NATURAL", tagColor: "var(--success)", glucosa: 45, mente: 90, higado: 15, ciencia: "🍌 <strong>Potasio:</strong> Carbohidratos limpios ideales para la contracción muscular y claridad mental." },
+            agua: { nombre: "Agua Pura", icono: "💧", tag: "HIDRATACIÓN ÓPTIMA", tagColor: "var(--success)", glucosa: 0, mente: 100, higado: 0, ciencia: "💧 <strong>Claridad Mental:</strong> Mantiene el volumen sanguíneo adecuado y la correcta transmisión eléctrica." }
         };
 
-        // Renderizar chips
+        // Renderizar chips del simulador
         const chipsContainer = document.getElementById('chips-container');
         for (const [id, data] of Object.entries(simData)) {
             const chip = document.createElement('div');
@@ -347,20 +390,16 @@
         function seleccionarSim(id) {
             document.querySelectorAll('.snack-chip').forEach(c => c.classList.remove('active'));
             document.getElementById(`chip-${id}`).classList.add('active');
-
             const item = simData[id];
             document.getElementById('sim-icon').innerText = item.icono;
             document.getElementById('sim-nombre').innerText = item.nombre;
-            
             const tag = document.getElementById('sim-tag');
             tag.innerText = item.tag;
             tag.style.background = item.tagColor;
 
-            // Actualizar barras
             actualizarBarra('glucosa', item.glucosa, true);
             actualizarBarra('mente', item.mente, false);
             actualizarBarra('higado', item.higado, true);
-
             document.getElementById('sim-ciencia').innerHTML = item.ciencia;
         }
 
@@ -368,109 +407,219 @@
             document.getElementById(`val-${tipo}`).innerText = valor + '%';
             const bar = document.getElementById(`bar-${tipo}`);
             bar.style.width = valor + '%';
-            
-            if (esInversoRojo) {
-                bar.style.backgroundColor = valor > 70 ? 'var(--accent)' : (valor > 40 ? 'var(--warning)' : 'var(--success)');
-            } else {
-                bar.style.backgroundColor = valor > 70 ? 'var(--success)' : (valor > 40 ? 'var(--warning)' : 'var(--accent)');
+            bar.style.backgroundColor = esInversoRojo ? 
+                (valor > 70 ? 'var(--accent)' : (valor > 40 ? 'var(--warning)' : 'var(--success')) :
+                (valor > 70 ? 'var(--success)' : (valor > 40 ? 'var(--warning)' : 'var(--accent)'));
+        }
+        seleccionarSim('gaseosa');
+
+
+        // --- 2. GESTIÓN DE VISTAS (Pestañas) ---
+        function cambiarVista(vista) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('vista-sim').classList.add('hidden');
+            document.getElementById('vista-quiz').classList.add('hidden');
+            document.getElementById('vista-batalla').classList.add('hidden');
+
+            if (vista === 'sim') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('vista-sim').classList.remove('hidden');
+            } else if (vista === 'quiz') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('vista-quiz').classList.remove('hidden');
+                iniciarQuiz();
+            } else if (vista === 'batalla') {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                document.getElementById('vista-batalla').classList.remove('hidden');
+                iniciarBatalla();
             }
         }
 
-        seleccionarSim('gaseosa');
 
-        // Lógica del Quiz / Juego Flash
-        const preguntasQuiz = [
+        // --- 3. BANCO DE PREGUNTAS VARIADAS (Trivia Flash) ---
+        const bancoPreguntas = [
             {
                 pregunta: "¿Qué órgano libera insulina rápidamente al detectar un pico de azúcar en sangre?",
-                opciones: [
-                    { texto: "El Hígado", correcta: false },
-                    { texto: "El Páncreas", correcta: true },
-                    { texto: "Los Riñones", correcta: false }
-                ]
+                opciones: [{ texto: "El Hígado", correcta: false }, { texto: "El Páncreas", correcta: true }, { texto: "Los Riñones", correcta: false }]
             },
             {
                 pregunta: "¿Por qué la fibra de una fruta evita el bajón brusco de energía?",
-                opciones: [
-                    { texto: "Enlentece la absorción de los azúcares", correcta: true },
-                    { texto: "Elimina todas las calorías por completo", correcta: false },
-                    { texto: "Convierte el azúcar en grasa al instante", correcta: false }
-                ]
+                opciones: [{ texto: "Enlentece la absorción de los azúcares", correcta: true }, { texto: "Elimina calorías por completo", correcta: false }, { texto: "Convierte azúcar en grasa al instante", correcta: false }]
             },
             {
                 pregunta: "¿Qué neurotransmisor estimulan las grasas y azúcares procesados generando antojos?",
-                opciones: [
-                    { texto: "Dopamina (recompensa)", correcta: true },
-                    { texto: "Melatonina (sueño profundo)", correcta: false },
-                    { texto: "Adrenalina (alerta máxima)", correcta: false }
-                ]
+                opciones: [{ texto: "Dopamina (recompensa)", correcta: true }, { texto: "Melatonina (sueño profundo)", correcta: false }, { texto: "Adrenalina (alerta máxima)", correcta: false }]
+            },
+            {
+                pregunta: "¿Cuál es el principal efecto físico de consumir gaseosa o azúcar líquida de golpe?",
+                opciones: [{ texto: "Pico de glucosa e hipoglucemia temporal", correcta: true }, { texto: "Aumento instantáneo de masa muscular", correcta: false }, { texto: "Oxigenación pulmonar acelerada", correcta: false }]
+            },
+            {
+                pregunta: "¿Qué componente de la manzana ayuda a proteger a las neuronas del estrés oxidativo?",
+                opciones: [{ texto: "Antioxidantes y pectina", correcta: true }, { texto: "Aceites hidrogenados", correcta: false }, { texto: "Sodio refinado", correcta: false }]
             }
         ];
 
-        let preguntaActual = 0;
-        let puntaje = 0;
+        let quizActuales = [];
+        let indexQuiz = 0;
+        let puntajeQuiz = 0;
 
-        function cargarPregunta() {
-            if (preguntaActual >= preguntasQuiz.length) {
-                document.querySelector('.quiz-card').innerHTML = `
-                    <div style="text-align: center; padding: 15px;">
-                        <div style="font-size: 2.5rem; margin-bottom: 5px;">🏆</div>
-                        <h3 style="margin: 0 0 5px 0;">¡Reto Superado!</h3>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">Puntaje final: <strong>${puntaje} pts</strong></p>
-                        <button class="action-btn" style="display:block;" onclick="reiniciarJuego()">Jugar de Nuevo 🔄</button>
+        function iniciarQuiz() {
+            // Mezclar preguntas aleatoriamente
+            quizActuales = [...bancoPreguntas].sort(() => Math.random() - 0.5).slice(0, 3);
+            indexQuiz = 0;
+            puntajeQuiz = 0;
+            cargarPreguntaQuiz();
+        }
+
+        function cargarPreguntaQuiz() {
+            if (indexQuiz >= quizActuales.length) {
+                document.getElementById('vista-quiz').innerHTML = `
+                    <div class="game-card" style="text-align: center; justify-content: center;">
+                        <div style="font-size: 3rem; margin-bottom: 5px;">🏆</div>
+                        <h3 style="margin: 0 0 5px 0;">¡Trivia Completada!</h3>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px;">Puntaje final: <strong>${puntajeQuiz} pts</strong></p>
+                        <button class="action-btn" style="display:block;" onclick="reiniciarApp()">Jugar de Nuevo 🔄</button>
                     </div>
                 `;
                 return;
             }
 
-            const p = preguntasQuiz[preguntaActual];
-            document.getElementById('quiz-counter').innerText = `Pregunta ${preguntaActual + 1}/${preguntasQuiz.length}`;
-            document.getElementById('quiz-score').innerText = `Puntaje: ${puntaje} pts`;
+            const p = quizActuales[indexQuiz];
+            document.getElementById('quiz-counter').innerText = `Pregunta ${indexQuiz + 1}/${quizActuales.length}`;
+            document.getElementById('quiz-score').innerText = `Puntaje: ${puntajeQuiz} pts`;
             document.getElementById('quiz-pregunta').innerText = p.pregunta;
             document.getElementById('quiz-next-btn').style.display = 'none';
 
+            // Mezclar opciones también para que varíen de posición
+            const opcionesMezcladas = [...p.opciones].sort(() => Math.random() - 0.5);
             const opcionesContainer = document.getElementById('quiz-options');
             opcionesContainer.innerHTML = '';
 
-            p.opciones.forEach(op => {
+            opcionesMezcladas.forEach(op => {
                 const btn = document.createElement('button');
-                btn.className = 'quiz-option';
+                btn.className = 'game-option';
                 btn.innerText = op.texto;
-                btn.onclick = () => verificarRespuesta(op.correcta, btn);
+                btn.onclick = () => verificarRespuestaQuiz(op.correcta, btn);
                 opcionesContainer.appendChild(btn);
             });
         }
 
-        function verificarRespuesta(esCorrecta, boton) {
-            const botones = document.querySelectorAll('.quiz-option');
+        function verificarRespuestaQuiz(esCorrecta, boton) {
+            const botones = document.querySelectorAll('#vista-quiz .game-option');
             botones.forEach(b => b.disabled = true);
 
             if (esCorrecta) {
                 boton.classList.add('correct');
-                puntaje += 100;
+                puntajeQuiz += 100;
             } else {
                 boton.classList.add('wrong');
-                botones.forEach((b, index) => {
-                    if (preguntasQuiz[preguntaActual].opciones[index].correcta) {
+                botones.forEach(b => {
+                    // Buscar la correcta original en el array mezclado
+                    const p = quizActuales[indexQuiz];
+                    const opOriginal = p.opciones.find(o => o.texto === b.innerText);
+                    if (opOriginal && opOriginal.correcta) {
                         b.classList.add('correct');
                     }
                 });
             }
 
-            document.getElementById('quiz-score').innerText = `Puntaje: ${puntaje} pts`;
+            document.getElementById('quiz-score').innerText = `Puntaje: ${puntajeQuiz} pts`;
             document.getElementById('quiz-next-btn').style.display = 'block';
         }
 
-        function siguientePregunta() {
-            preguntaActual++;
-            cargarPregunta();
+        function siguientePreguntaQuiz() {
+            indexQuiz++;
+            cargarPreguntaQuiz();
         }
 
-        function reiniciarJuego() {
+
+        // --- 4. MINIJUEGO: BATALLA NUTRICIONAL ---
+        const bancoBatallas = [
+            { a: { id: "manzana", nombre: "Manzana", icono: "🍎", sano: true }, b: { id: "gaseosa", nombre: "Gaseosa", icono: "🥤", sano: false } },
+            { a: { id: "platano", nombre: "Plátano", icono: "🍌", sano: true }, b: { id: "papas", nombre: "Papas Fritas", icono: "🍟", sano: false } },
+            { a: { id: "agua", nombre: "Agua Pura", icono: "💧", sano: true }, b: { id: "queque", nombre: "Queque", icono: "🥮", sano: false } },
+            { a: { id: "galletas", nombre: "Galletas", icono: "🍪", sano: false }, b: { id: "manzana", nombre: "Manzana", icono: "🍎", sano: true } }
+        ];
+
+        let batallasActuales = [];
+        let indexBatalla = 0;
+        let puntajeBatalla = 0;
+        let opcionGanadora = 'A';
+
+        function iniciarBatalla() {
+            batallasActuales = [...bancoBatallas].sort(() => Math.random() - 0.5).slice(0, 3);
+            indexBatalla = 0;
+            puntajeBatalla = 0;
+            cargarRondaBatalla();
+        }
+
+        function cargarRondaBatalla() {
+            if (indexBatalla >= batallasActuales.length) {
+                document.getElementById('vista-batalla').innerHTML = `
+                    <div class="game-card" style="text-align: center; justify-content: center;">
+                        <div style="font-size: 3rem; margin-bottom: 5px;">⚡</div>
+                        <h3 style="margin: 0 0 5px 0;">¡Batalla Finalizada!</h3>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px;">Puntaje de Batalla: <strong>${puntajeBatalla} pts</strong></p>
+                        <button class="action-btn" style="display:block;" onclick="reiniciarApp()">Jugar de Nuevo 🔄</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const ronda = batallasActuales[indexBatalla];
+            // Aleatorizar si el sano va en A o B
+            const invertir = Math.random() > 0.5;
+            const itemA = invertir ? ronda.b : ronda.a;
+            const itemB = invertir ? ronda.a : ronda.b;
+
+            opcionGanadora = (itemA.sano) ? 'A' : 'B';
+
+            document.getElementById('batalla-counter').innerText = `Reto ${indexBatalla + 1}/${batallasActuales.length}`;
+            document.getElementById('batalla-score').innerText = `Puntaje: ${puntajeBatalla} pts`;
+            document.getElementById('bat-icon-A').innerText = itemA.icono;
+            document.getElementById('bat-name-A').innerText = itemA.nombre;
+            document.getElementById('bat-icon-B').innerText = itemB.icono;
+            document.getElementById('bat-name-B').innerText = itemB.nombre;
+            document.getElementById('batalla-feedback').innerText = "";
+            document.getElementById('batalla-next-btn').style.display = 'none';
+
+            // Habilitar tarjetas
+            document.getElementById('card-A').style.pointerEvents = 'auto';
+            document.getElementById('card-B').style.pointerEvents = 'auto';
+            document.getElementById('card-A').style.borderColor = 'transparent';
+            document.getElementById('card-B').style.borderColor = 'transparent';
+        }
+
+        function elegirBatalla(eleccion) {
+            document.getElementById('card-A').style.pointerEvents = 'none';
+            document.getElementById('card-B').style.pointerEvents = 'none';
+
+            const feedback = document.getElementById('batalla-feedback');
+            if (eleccion === opcionGanadora) {
+                feedback.style.color = 'var(--success)';
+                feedback.innerHTML = "¡Correcto! Elegiste la opción con mayor aporte nutricional y menor impacto glucémico.";
+                puntajeBatalla += 100;
+                document.getElementById(`card-${eleccion}`).style.borderColor = 'var(--success)';
+            } else {
+                feedback.style.color = 'var(--accent)';
+                feedback.innerHTML = "¡Incorrecto! Esa opción genera mayor fatiga metabólica y picos de insulina.";
+                document.getElementById(`card-${eleccion}`).style.borderColor = 'var(--accent)';
+                document.getElementById(`card-${opcionGanadora}`).style.borderColor = 'var(--success)';
+            }
+
+            document.getElementById('batalla-score').innerText = `Puntaje: ${puntajeBatalla} pts`;
+            document.getElementById('batalla-next-btn').style.display = 'block';
+        }
+
+        function siguienteBatalla() {
+            indexBatalla++;
+            cargarRondaBatalla();
+        }
+
+        function reiniciarApp() {
             location.reload();
         }
-
-        // Iniciar el quiz al cargar
-        cargarPregunta();
     </script>
 </body>
 </html>
