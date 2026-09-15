@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriSemáforo - Catálogo Completo</title>
+    <title>NutriDash - App Dinámica</title>
     <style>
         :root {
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --primary: #0284c7;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #38bdf8;
+            --accent: #f43f5e;
+            --success: #10b981;
+            --warning: #f59e0b;
         }
 
         html, body {
@@ -29,10 +33,13 @@
             flex-direction: column;
             box-sizing: border-box;
             overflow: hidden;
+            max-width: 480px;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
 
         header {
-            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            background: linear-gradient(135deg, #0284c7, #2563eb);
             color: white;
             padding: 15px 20px;
             text-align: center;
@@ -41,154 +48,186 @@
 
         header h1 {
             margin: 0;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
         }
 
         header p {
-            margin: 3px 0 0 0;
-            font-size: 0.85rem;
-            opacity: 0.9;
+            margin: 2px 0 0 0;
+            font-size: 0.8rem;
+            opacity: 0.8;
         }
 
         .content {
             padding: 15px;
             flex: 1;
-            overflow-y: auto; /* Permite hacer scroll vertical en la lista larga */
+            overflow-y: auto;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Tabs de navegación inferior o superior */
+        .nav-tabs {
+            display: flex;
+            background: #0f172a;
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #0f172a;
         }
 
         .section-title {
             font-size: 0.95rem;
             font-weight: bold;
             margin-bottom: 10px;
-            color: #475569;
+            color: var(--text-muted);
         }
 
-        .grid-snacks {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding-bottom: 20px;
-        }
-
-        .snack-btn {
-            background: #f1f5f9;
-            border: 2px solid #e2e8f0;
-            padding: 12px 10px;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text);
+        /* Selector deslizante de snacks dinámicos */
+        .snack-scroller {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            flex-shrink: 0;
         }
 
-        .snack-btn:hover {
-            background: #e0f2fe;
-            border-color: var(--primary);
-            transform: translateY(-2px);
+        .snack-chip {
+            background: #334155;
+            border: 2px solid transparent;
+            padding: 8px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
         }
 
-        .snack-btn .icon {
-            font-size: 1.6rem;
+        .snack-chip.active {
+            background: var(--primary);
+            color: #0f172a;
+            border-color: #fff;
+        }
+
+        /* Tarjeta de simulación dinámica */
+        .sim-card {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid #334155;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .sim-icon {
+            font-size: 3rem;
+            margin-bottom: 5px;
+        }
+
+        /* Barras de estado dinámicas */
+        .stat-group {
+            margin-top: 12px;
+            text-align: left;
+        }
+
+        .stat-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
             margin-bottom: 4px;
+            font-weight: bold;
         }
 
-        /* Pantalla de Resultados */
-        .result-view-container {
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: #334155;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
             height: 100%;
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.6s;
+        }
+
+        .dynamic-info {
+            background: #1e293b;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            border-left: 4px solid var(--primary);
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        /* Minijuego / Quiz */
+        .quiz-card {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid #334155;
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        .result-card {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .semaforo-indicator {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            margin: 0 auto 10px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-
-        .rojo { background-color: #ef4444; }
-        .amarillo { background-color: #f59e0b; }
-        .verde { background-color: #10b981; }
-
-        .result-title {
-            font-size: 1.1rem;
+        .quiz-question {
+            font-size: 1rem;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
+            line-height: 1.4;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        .badge.rojo { background-color: #ef4444; }
-        .badge.amarillo { background-color: #f59e0b; }
-        .badge.verde { background-color: #10b981; }
-
-        .info-box {
-            text-align: left;
-            background: #f8fafc;
-            border-left: 4px solid var(--primary);
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            margin-bottom: 10px;
-            line-height: 1.35;
-        }
-
-        .info-box h4 {
-            margin: 0 0 3px 0;
-            color: var(--primary);
-            font-size: 0.9rem;
-        }
-
-        .back-btn {
-            background: #e2e8f0;
+        .quiz-option {
+            background: #334155;
             border: none;
-            color: #334155;
+            color: white;
             padding: 12px;
             border-radius: 10px;
-            font-weight: bold;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            width: 100%;
-            font-size: 0.95rem;
+            margin-bottom: 8px;
             transition: background 0.2s;
-            margin-top: 10px;
-            flex-shrink: 0;
+            text-align: left;
         }
 
-        .back-btn:hover {
-            background: #cbd5e1;
+        .quiz-option:hover {
+            background: #475569;
+        }
+
+        .quiz-option.correct {
+            background: var(--success) !important;
+            color: #0f172a;
+        }
+
+        .quiz-option.wrong {
+            background: var(--accent) !important;
         }
 
         .hidden {
@@ -201,182 +240,292 @@
     <div class="app-container">
         <!-- ENCABEZADO -->
         <header>
-            <h1>NutriSemáforo</h1>
-            <p>Ciencia y nutrición en pantalla completa</p>
+            <h1>NutriDash ⚡ Lab</h1>
+            <p>Simulador Metabólico Interactivo</p>
         </header>
 
         <!-- CONTENIDO -->
         <div class="content">
             
-            <!-- VISTA SELECCIÓN -->
-            <div id="selection-view" style="height: 100%; display: flex; flex-direction: column;">
-                <div class="section-title">Elige un producto (Muchos snacks y comidas):</div>
+            <!-- NAVEGACIÓN TABS -->
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="cambiarTab('simulador')">🧪 Simulador</button>
+                <button class="tab-btn" onclick="cambiarTab('quiz')">🎮 Reto Flash</button>
+            </div>
+
+            <!-- VISTA 1: SIMULADOR DE IMPACTO -->
+            <div id="view-simulador" style="display: flex; flex-direction: column; flex: 1;">
+                <div class="section-title">Elige un alimento para simular su impacto:</div>
                 
-                <div class="grid-snacks" id="grid-snacks-container">
-                    <!-- Se inyectan dinámicamente con JS para mantenerlo ordenado -->
+                <div class="snack-scroller" id="chips-container">
+                    <!-- Se inyectan con JS -->
+                </div>
+
+                <div class="sim-card">
+                    <div class="sim-icon" id="sim-icon">🥤</div>
+                    <h2 id="sim-nombre" style="margin: 0 0 5px 0; font-size: 1.1rem;">Gaseosa Regular</h2>
+                    <span id="sim-tag" style="font-size: 0.75rem; padding: 3px 8px; border-radius: 10px; font-weight: bold; background: var(--accent); color: white;">ALTO IMPACTO</span>
+
+                    <!-- Barras dinámicas -->
+                    <div class="stat-group">
+                        <div class="stat-label"><span>⚡ Picos de Glucosa</span><span id="val-glucosa">95%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-glucosa" style="background: var(--accent);"></div></div>
+                    </div>
+
+                    <div class="stat-group">
+                        <div class="stat-label"><span>🧠 Concentración Mental</span><span id="val-mente">20%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-mente" style="background: var(--warning);"></div></div>
+                    </div>
+
+                    <div class="stat-group">
+                        <div class="stat-label"><span>🔥 Trabajo Hepático (Hígado)</span><span id="val-higado">90%</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-higado" style="background: var(--accent);"></div></div>
+                    </div>
+                </div>
+
+                <div class="dynamic-info" id="sim-ciencia">
+                    Cargando análisis científico...
                 </div>
             </div>
 
-            <!-- VISTA RESULTADO -->
-            <div id="result-view" class="hidden result-view-container">
-                <div class="result-card">
-                    <div id="semaforo-icon" class="semaforo-indicator rojo">🛑</div>
-                    <div class="result-title" id="res-nombre">Nombre del Snack</div>
-                    <div id="res-badge" class="badge rojo">ALTO EN AZÚCAR / GRASA</div>
-
-                    <div class="info-box">
-                        <h4>⚡ Efecto en tu energía:</h4>
-                        <p id="res-energia">Explicación de la energía...</p>
+            <!-- VISTA 2: RETO FLASH (QUIZ DINÁMICO) -->
+            <div id="view-quiz" class="hidden" style="display: none; flex-direction: column; flex: 1;">
+                <div class="quiz-card">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
+                            <span id="quiz-counter">Pregunta 1/3</span>
+                            <span id="quiz-score">Puntaje: 0</span>
+                        </div>
+                        <div class="quiz-question" id="quiz-pregunta">¿Qué ocurre en tu cuerpo al consumir azúcar líquida de golpe?</div>
+                        <div id="quiz-options">
+                            <!-- Opciones inyectadas -->
+                        </div>
                     </div>
-
-                    <div class="info-box" style="border-left-color: #10b981;">
-                        <h4>🔬 La Ciencia detrás:</h4>
-                        <p id="res-ciencia">Explicación biológica...</p>
-                    </div>
+                    <button class="tab-btn active" id="quiz-next-btn" style="display:none; margin-top: 15px; padding: 12px;" onclick="siguientePregunta()">Siguiente Pregunta →</button>
                 </div>
-
-                <button class="back-btn" onclick="volverSeleccion()">← Elegir otro snack</button>
             </div>
 
         </div>
     </div>
 
     <script>
-        const baseDatosSnacks = {
+        // Base de datos de simulación dinámica
+        const simData = {
             gaseosa: {
                 nombre: "Gaseosa Regular (500ml)",
-                nivel: "rojo",
-                textoNivel: "ALTO EN AZÚCAR REFINADA",
                 icono: "🥤",
-                energia: "Pico rápido de energía seguido de un bajón brusco que causa fatiga en clase.",
-                ciencia: "La fructosa líquida satura el hígado y provoca una descarga masiva de insulina, generando hipoglucemia temporal."
+                tag: "ALTO IMPACTO",
+                tagColor: "var(--accent)",
+                glucosa: 95,
+                mente: 20,
+                higado: 90,
+                ciencia: "⚠️ <strong>Alerta Metabólica:</strong> La avalancha de fructosa líquida satura el hígado de inmediato, obligándolo a convertir el exceso en grasa mientras el cerebro experimenta un bajón repentino de energía."
             },
             papas: {
                 nombre: "Papas Fritas de Bolsa",
-                nivel: "rojo",
-                textoNivel: "ALTO EN SODIO Y GRASAS",
                 icono: "🍟",
-                energia: "Digestión lenta que genera pesadez y reduce la concentración mental.",
-                ciencia: "Las grasas saturadas fuerzan al sistema digestivo y provocan leve inflamación sistémica temporal."
-            },
-            galletas: {
-                nombre: "Galletas Rellenas",
-                nivel: "rojo",
-                textoNivel: "ALTO EN AZÚCAR Y GRASAS TRANS",
-                icono: "🍪",
-                energia: "Impulso de dopamina fugaz que genera antojos repetitivos rápidos.",
-                ciencia: "Estimulan los circuitos de recompensa del cerebro de forma muy intensa por su combinación de grasa y azúcar."
+                tag: "GRASAS PESADAS",
+                tagColor: "var(--warning)",
+                glucosa: 60,
+                mente: 30,
+                higado: 75,
+                ciencia: "🍟 <strong>Impacto Digestivo:</strong> Las grasas fritas y el exceso de sodio exigen una digestión lenta que desvía flujo sanguíneo del cerebro hacia el estómago, generando pesadez."
             },
             manzana: {
                 nombre: "Manzana Fresca",
-                nivel: "verde",
-                textoNivel: "100% NATURAL Y NUTRITIVA",
                 icono: "🍎",
-                energia: "Energía estable y sostenida por horas para mantener el cerebro activo.",
-                ciencia: "La pectina (fibra) enlentece la absorción de la fructosa, evitando picos de glucosa."
-            },
-            yogurt: {
-                nombre: "Yogurt Comercial Azucarado",
-                nivel: "amarillo",
-                textoNivel: "MODERADO (Azúcares añadidos)",
-                icono: "🥛",
-                energia: "Aporta proteínas pero el jarabe añadido acelera la glucosa.",
-                ciencia: "Aporta probióticos buenos para la microbiota, aunque el azúcar refinada resta parte de su beneficio."
-            },
-            chubby: {
-                nombre: "Néctar en Caja",
-                nivel: "rojo",
-                textoNivel: "ALTO EN AZÚCAR Y ADITIVOS",
-                icono: "🧃",
-                energia: "Falsa sensación saludable que termina causando el mismo bajón que una gaseosa.",
-                ciencia: "Al carecer de la fibra de la fruta original, el azúcar pasa directo a la sangre."
+                tag: "ENERGÍA ESTABLE",
+                tagColor: "var(--success)",
+                glucosa: 30,
+                mente: 95,
+                higado: 10,
+                ciencia: "✨ <strong>Equilibrio Celular:</strong> Gracias a la pectina (fibra natural), la glucosa se libera lentamente, manteniendo la sinapsis neuronal óptima y sin forzar al páncreas."
             },
             papa_rellena: {
-                nombre: "Papa Rellena / Rebozada",
-                nivel: "rojo",
-                textoNivel: "ALTO EN GRASAS FRITAS Y CARBOHIDRATOS",
+                nombre: "Papa Rellena",
                 icono: "🥔",
-                energia: "Aporte calórico muy denso que enlentece la actividad cerebral tras almorzar.",
-                ciencia: "El aceite absorbido a alta temperatura se descompone en ácidos grasos oxidados que exigen más al metabolismo."
-            },
-            queque: {
-                nombre: "Queque Casero o Industrial",
-                nivel: "rojo",
-                textoNivel: "ALTO EN HARINAS REFINADAS Y AZÚCAR",
-                icono: "🥮",
-                energia: "Subidón inmediato de glucosa seguido de somnolencia.",
-                ciencia: "La combinación de harina blanca refinada y azúcar eleva drásticamente la carga glucémica."
-            },
-            chifles: {
-                nombre: "Chifles (Plátanos Fritos)",
-                nivel: "rojo",
-                textoNivel: "ALTO EN GRASAS Y SODIO",
-                icono: "🍌",
-                energia: "Aporte rápido de calorías fritas que saturan la digestión.",
-                ciencia: "El plátano pierde agua al freírse y absorbe grasas vegetales modificadas por el calor intenso."
-            },
-            salchipapa: {
-                nombre: "Salchipapa Escolar",
-                nivel: "rojo",
-                textoNivel: "ALTO EN GRASAS SATURADAS Y SODIO",
-                icono: "🌭",
-                energia: "Digestión pesada que quita agilidad mental y concentración.",
-                ciencia: "Embutidos ultraprocesados con alto contenido de sodio que alteran la presión arterial transitoriamente."
-            },
-            platano: {
-                nombre: "Plátano de Seda (Fruta)",
-                nivel: "verde",
-                textoNivel: "IDEAL PARA ENERGÍA FÍSICA",
-                icono: "🍌",
-                energia: "Excelente recarga de potasio y carbohidratos limpios para el deporte o estudio.",
-                ciencia: "Aporta azúcares naturales acompañados de potasio, fundamental para la contracción muscular y sinapsis."
+                tag: "CALORÍAS DENSAS",
+                tagColor: "var(--warning)",
+                glucosa: 70,
+                mente: 35,
+                higado: 70,
+                ciencia: "🥔 <strong>Carga Calórica:</strong> Al ser frita con almidón adentro, produce una saciedad brusca pero seguida de letargo y fatiga temporal por el esfuerzo metabólico."
             },
             agua: {
                 nombre: "Agua Pura",
-                nivel: "verde",
-                textoNivel: "ESENCIAL PARA LA VIDA",
                 icono: "💧",
-                energia: "Mantiene la hidratación celular óptima sin alterar el metabolismo.",
-                ciencia: "El cerebro humano es un 75% agua; mantenerlo hidratado previene la fatiga mental y cefaleas."
+                tag: "HIDRATACIÓN ÓPTIMA",
+                tagColor: "var(--success)",
+                glucosa: 0,
+                mente: 100,
+                higado: 0,
+                ciencia: "💧 <strong>Claridad Mental:</strong> Mantiene el volumen sanguíneo adecuado y la correcta transmisión de impulsos eléctricos entre las neuronas sin alterar la química interna."
+            },
+            queque: {
+                nombre: "Queque Casero",
+                icono: "🥮",
+                tag: "CARGA GLUCÉMICA",
+                tagColor: "var(--accent)",
+                glucosa: 90,
+                mente: 25,
+                higado: 80,
+                ciencia: "⚡ <strong>Pico y Bajón:</strong> La combinación de harina refinada y azúcar eleva violentamente la insulina, provocando somnolencia a los 30 minutos de haberlo comido."
             }
         };
 
-        // Generar los botones automáticamente en la cuadrícula
-        const container = document.getElementById('grid-snacks-container');
-        for (const [id, data] of Object.entries(baseDatosSnacks)) {
-            const btn = document.createElement('div');
-            btn.className = 'snack-btn';
-            btn.onclick = () => mostrarSnack(id);
-            btn.innerHTML = `<span class="icon">${data.icono}</span><span>${data.nombre.split(' ')[0]}...</span>`.replace('...', '');
-            // Mejor texto visual para el botón
-            btn.innerHTML = `<span class="icon">${data.icono}</span><span style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:100%;">${data.nombre}</span>`;
-            container.appendChild(btn);
+        // Renderizar chips del simulador
+        const chipsContainer = document.getElementById('chips-container');
+        for (const [id, data] of Object.entries(simData)) {
+            const chip = document.createElement('div');
+            chip.className = `snack-chip ${id === 'gaseosa' ? 'active' : ''}`;
+            chip.id = `chip-${id}`;
+            chip.innerHTML = `${data.icono} ${data.nombre.split(' ')[0]}`;
+            chip.onclick = () => seleccionarSim(id);
+            chipsContainer.appendChild(chip);
         }
 
-        function mostrarSnack(id) {
-            const data = baseDatosSnacks[id];
-            if (!data) return;
+        function seleccionarSim(id) {
+            // Actualizar chips activos
+            document.querySelectorAll('.snack-chip').forEach(c => c.classList.remove('active'));
+            document.getElementById(`chip-${id}`).classList.add('active');
 
-            document.getElementById('res-nombre').innerText = data.nombre;
-            document.getElementById('res-energia').innerText = data.energia;
-            document.getElementById('res-ciencia').innerText = data.ciencia;
+            const item = simData[id];
+            document.getElementById('sim-icon').innerText = item.icono;
+            document.getElementById('sim-nombre').innerText = item.nombre;
+            
+            const tag = document.getElementById('sim-tag');
+            tag.innerText = item.tag;
+            tag.style.background = item.tagColor;
 
-            const semaforoIcon = document.getElementById('semaforo-icon');
-            const resBadge = document.getElementById('res-badge');
+            // Actualizar valores de barras con animación fluida
+            document.getElementById('val-glucosa').innerText = item.glucosa + '%';
+            document.getElementById('bar-glucosa').style.width = item.glucosa + '%';
+            document.getElementById('bar-glucosa').style.backgroundColor = item.glucosa > 70 ? 'var(--accent)' : (item.glucosa > 40 ? 'var(--warning)' : 'var(--success)');
 
-            semaforoIcon.className = 'semaforo-indicator ' + data.nivel;
-            resBadge.className = 'badge ' + data.nivel;
+            document.getElementById('val-mente').innerText = item.mente + '%';
+            document.getElementById('bar-mente').style.width = item.mente + '%';
+            document.getElementById('bar-mente').style.backgroundColor = item.mente > 70 ? 'var(--success)' : (item.mente > 40 ? 'var(--warning)' : 'var(--accent)');
 
-            semaforoIcon.innerText = data.icono;
-            resBadge.innerText = data.textoNivel;
+            document.getElementById('val-higado').innerText = item.higado + '%';
+            document.getElementById('bar-higado').style.width = item.higado + '%';
+            document.getElementById('bar-higado').style.backgroundColor = item.higado > 70 ? 'var(--accent)' : (item.higado > 40 ? 'var(--warning)' : 'var(--success)');
 
-            document.getElementById('selection-view').classList.add('hidden');
-            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('sim-ciencia').innerHTML = item.ciencia;
         }
 
-        function volverSeleccion() {
-            document.getElementById('result-view').classList.add('hidden');
-            document.getElementById('selection-view').classList.remove('hidden');
+        // Iniciar con gaseosa
+        seleccionarSim('gaseosa');
+
+        // Sistema de Tabs
+        function cambiarTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if (tab === 'simulador') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('view-simulador').style.display = 'flex';
+                document.getElementById('view-quiz').style.display = 'none';
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('view-simulador').style.display = 'none';
+                document.getElementById('view-quiz').style.display = 'flex';
+                cargarPregunta();
+            }
+        }
+
+        // Lógica del Quiz Dinámico
+        const preguntasQuiz = [
+            {
+                pregunta: "¿Qué órgano libera insulina rápidamente al detectar un pico de azúcar en sangre?",
+                opciones: [
+                    { texto: "El Hígado", correcta: false },
+                    { texto: "El Páncreas", correcta: true },
+                    { texto: "Los Riñones", correcta: false }
+                ],
+                explicación: "¡Correcto! El páncreas detecta el aumento de glucosa y secreta insulina para regular el azúcar en la sangre."
+            },
+            {
+                pregunta: "¿Por qué la fibra (como la de la manzana) evita el bajón de energía?",
+                opciones: [
+                    { texto: "Enlentece la absorción de los azúcares", correcta: true },
+                    { texto: "Elimina por completo las calorías", correcta: false },
+                    { texto: "Convierte el azúcar en grasa de inmediato", correcta: false }
+                ],
+                explicación: "¡Exacto! La fibra actúa como malla que hace que la glucosa ingrese de forma gradual al organismo."
+            },
+            {
+                pregunta: "¿Qué neurotransmisor estimulan las grasas y azúcares procesados generando antojos rápidos?",
+                opciones: [
+                    { texto: "Dopamina (recompensa)", correcta: true },
+                    { texto: "Melatonina (sueño)", correcta: false },
+                    { texto: "Adrenalina (alerta)", correcta: false }
+                ],
+                explicación: "¡Así es! Activan los circuitos de recompensa de dopamina, creando esa sensación de querer comer más."
+            }
+        ];
+
+        let preguntaActual = 0;
+        let puntaje = 0;
+
+        function cargarPregunta() {
+            const p = preguntasQuiz[preguntaActual];
+            document.getElementById('quiz-counter').innerText = `Pregunta ${preguntaActual + 1}/${preguntasQuiz.length}`;
+            document.getElementById('quiz-score').innerText = `Puntaje: ${puntaje}`;
+            document.getElementById('quiz-pregunta').innerText = p.pregunta;
+            document.getElementById('quiz-next-btn').style.display = 'none';
+
+            const opcionesContainer = document.getElementById('quiz-options');
+            opcionesContainer.innerHTML = '';
+
+            p.opciones.forEach(op => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.innerText = op.texto;
+                btn.onclick = () => verificarRespuesta(op.correcta, btn);
+                opcionesContainer.appendChild(btn);
+            });
+        }
+
+        function verificarRespuesta(esCorrecta, boton) {
+            // Deshabilitar todos los botones
+            const botones = document.querySelectorAll('.quiz-option');
+            botones.forEach(b => b.disabled = true);
+
+            if (esCorrecta) {
+                boton.classList.add('correct');
+                puntaje += 100;
+            } else {
+                boton.classList.add('wrong');
+                // Mostrar la correcta
+                botones.forEach((b, index) => {
+                    if (preguntasQuiz[preguntaActual].opciones[index].correcta) {
+                        b.classList.add('correct');
+                    }
+                });
+            }
+
+            document.getElementById('quiz-score').innerText = `Puntaje: ${puntaje}`;
+            document.getElementById('quiz-next-btn').style.display = 'block';
+        }
+
+        function siguientePregunta() {
+            preguntaActual++;
+            if (preguntaActual < preguntasQuiz.length) {
+                cargarPregunta();
+            } else {
+                document.getElementById('view-quiz').innerHTML = `
+                    <div class="sim-card" style="margin: auto; padding: 30px;">
+                        <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
+                        <h2>¡Reto Completado!</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 15px;">Tu puntaje final es: <strong>${puntaje} puntos</strong></p>
+                        <button class="tab-btn active" style="padding: 12px; width: 100%;" onclick="reiniciarQuiz()">Jugar de Nuevo 🔄</button>
+                    </div>
+                `;
+            }
+        }
+
+        function reiniciarQuiz() {
+            preguntaActual = 0;
+            puntaje = 0;
+            location.reload(); // Recarga simple para reiniciar limpio
         }
     </script>
 </body>
