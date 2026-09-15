@@ -1,708 +1,504 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NutriDash - Feria de Ciencia</title>
-    <style>
-        :root {
-            --bg: #090d16;
-            --card-bg: #111827;
-            --card-inner: #1f2937;
-            --text: #f9fafb;
-            --text-muted: #9ca3af;
-            --primary: #0ea5e9;
-            --accent: #f43f5e;
-            --success: #10b981;
-            --warning: #f59e0b;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriDash PRO - Panel Nutricional Inteligente</title>
+  <style>
+    :root {
+      --primary: #10b981;
+      --primary-glow: rgba(16, 185, 129, 0.4);
+      --bg: #0b0f19;
+      --card-bg: #131b2e;
+      --card-border: #1e293b;
+      --card-border-hover: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
 
-        html, body {
-            width: 100vw;
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            overflow: hidden;
-            box-sizing: border-box;
-        }
+    body.light-mode {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+    }
 
-        .app-container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        header {
-            background: linear-gradient(135deg, #0369a1, #1d4ed8);
-            color: white;
-            padding: 12px 20px;
-            text-align: center;
-            flex-shrink: 0;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
-        }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 1.3rem;
-            letter-spacing: 0.5px;
-        }
+    .main-container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      flex: 1;
+    }
 
-        header p {
-            margin: 2px 0 0 0;
-            font-size: 0.75rem;
-            opacity: 0.9;
-        }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding: 25px;
+      background: linear-gradient(135deg, var(--card-bg) 0%, #1a233a 100%);
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
 
-        /* Pestañas de navegación superiores */
-        .nav-tabs {
-            display: flex;
-            background: #030712;
-            padding: 8px;
-            gap: 6px;
-            flex-shrink: 0;
-            overflow-x: auto;
-        }
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+      text-shadow: 0 0 15px var(--primary-glow);
+    }
 
-        .tab-btn {
-            flex: 1;
-            background: #1f2937;
-            border: 1px solid #374151;
-            color: var(--text-muted);
-            padding: 10px 12px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-            text-align: center;
-            white-space: nowrap;
-        }
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
 
-        .tab-btn.active {
-            background: var(--primary);
-            color: #030712;
-            border-color: var(--primary);
-            font-weight: 700;
-        }
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
 
-        /* Contenedor principal de pantallas */
-        .content {
-            padding: 14px;
-            flex: 1;
-            overflow-y: auto;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-        }
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 14px;
+    }
 
-        .game-view {
-            display: none;
-            flex-direction: column;
-            flex: 1;
-            box-sizing: border-box;
-            height: 100%;
-        }
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-        .game-view.active {
-            display: flex;
-        }
+    .tab-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
 
-        /* SIMULADOR GRANDE Y VISUAL */
-        .sim-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            flex: 1;
-        }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #022c22;
+      border-color: var(--primary);
+    }
 
-        .filter-buttons {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-            flex-shrink: 0;
-        }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
 
-        .filter-btn {
-            background: #1f2937;
-            border: 1px solid #374151;
-            color: var(--text);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+    .card {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-        .filter-btn.active {
-            background: var(--primary);
-            color: #030712;
-            font-weight: bold;
-            border-color: var(--primary);
-        }
+    .card:hover {
+      border-color: var(--card-border-hover);
+      transform: translateY(-2px);
+    }
 
-        .food-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 8px;
-            max-height: 150px;
-            overflow-y: auto;
-            flex-shrink: 0;
-            padding: 2px;
-        }
+    .card.selected {
+      border-color: var(--primary);
+      background-color: #064e3b15;
+    }
 
-        .food-card-mini {
-            background: var(--card-inner);
-            border: 2px solid #374151;
-            border-radius: 10px;
-            padding: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
 
-        .food-card-mini.active {
-            border-color: var(--primary);
-            background: #0369a133;
-        }
+    .card-icon {
+      font-size: 26px;
+      background: #1e293b;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
 
-        .food-card-mini span {
-            font-size: 1.8rem;
-            display: block;
-            margin-bottom: 2px;
-        }
+    .card.selected .card-icon {
+      background: var(--primary);
+      color: #022c22;
+    }
 
-        .food-card-mini p {
-            margin: 0;
-            font-size: 0.7rem;
-            font-weight: 600;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+    .card-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text);
+    }
 
-        /* Panel de Detalle Grande */
-        .detail-panel {
-            background: var(--card-inner);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid #374151;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            justify-content: space-between;
-        }
+    .badge-kcal {
+      display: inline-block;
+      background: #1e293b;
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
 
-        .detail-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #374151;
-            padding-bottom: 10px;
-        }
+    .nutrition-mini {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.4;
+      border-top: 1px solid var(--card-border);
+      padding-top: 8px;
+    }
 
-        .detail-icon {
-            font-size: 3rem;
-            background: #111827;
-            padding: 8px 14px;
-            border-radius: 12px;
-            border: 1px solid #374151;
-        }
+    .btn-action {
+      width: 100%;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #022c22;
+      border: none;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 800;
+      margin-top: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
 
-        .stat-bars {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 10px 0;
-        }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 15, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 99999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
 
-        .stat-row {
-            font-size: 0.75rem;
-        }
+    .modal-overlay.active {
+      display: flex;
+    }
 
-        .stat-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2px;
-            font-weight: bold;
-        }
+    .modal-content {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 24px;
+      padding: 25px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.9);
+      position: relative;
+    }
 
-        .bar-bg {
-            width: 100%;
-            height: 6px;
-            background: #374151;
-            border-radius: 3px;
-            overflow: hidden;
-        }
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 20px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .bar-fill {
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .info-boxes {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 5px;
-        }
-
-        .info-box {
-            background: #111827;
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            border-left: 3px solid var(--primary);
-        }
-
-        .info-box.warning {
-            border-left-color: var(--accent);
-        }
-
-        .info-box h4 {
-            margin: 0 0 3px 0;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        /* JUEGOS / TEST A PANTALLA COMPLETA */
-        .test-container {
-            background: var(--card-inner);
-            border-radius: 14px;
-            padding: 20px;
-            border: 1px solid #374151;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            justify-content: space-between;
-            box-sizing: border-box;
-        }
-
-        .test-question {
-            font-size: 1.05rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-
-        .test-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .test-option {
-            background: #111827;
-            border: 2px solid #374151;
-            color: white;
-            padding: 14px 16px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s;
-        }
-
-        .test-option:hover {
-            border-color: var(--primary);
-            background: #1f2937;
-        }
-
-        .test-option.correct {
-            background: var(--success) !important;
-            color: #030712;
-            border-color: var(--success);
-        }
-
-        .test-option.wrong {
-            background: var(--accent) !important;
-            border-color: var(--accent);
-        }
-
-        .action-btn {
-            background: var(--primary);
-            border: none;
-            color: #030712;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            display: none;
-        }
-
-        /* SECCIÓN DIETA Y RESTRICCIONES */
-        .diet-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .diet-card {
-            background: var(--card-inner);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid #374151;
-        }
-
-        .diet-card h3 {
-            margin: 0 0 8px 0;
-            font-size: 0.95rem;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .diet-card ul {
-            margin: 0;
-            padding-left: 18px;
-            font-size: 0.8rem;
-            line-height: 1.5;
-            color: var(--text-muted);
-        }
-
-        .diet-card li strong {
-            color: var(--text);
-        }
-    </style>
+    .summary-box {
+      background: #0b0f19;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid var(--card-border);
+    }
+  </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- ENCABEZADO -->
-        <header>
-            <h1>NutriDash ⚡ Lab Científico</h1>
-            <p>Análisis Metabólico, Restricciones y Test Nutricional</p>
-        </header>
-
-        <!-- NAVEGACIÓN TABS -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="cambiarVista('sim')">🧪 Simulador de Alimentos</button>
-            <button class="tab-btn" onclick="cambiarVista('test')">📝 Test Científico</button>
-            <button class="tab-btn" onclick="cambiarVista('dieta')">🥗 Dieta y Restricciones</button>
+  <!-- Modal Inicial de Perfil y Restricciones -->
+  <div id="profile-modal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0b0f19; z-index: 999999; display: flex; justify-content: center; align-items: center; padding: 20px;">
+    <div style="background: var(--card-bg); border: 2px solid var(--primary); padding: 25px; border-radius: 20px; width: 100%; max-width: 420px; color: var(--text);">
+      <h2 style="color: var(--primary); text-align: center; margin-bottom: 8px;">NutriDash PRO</h2>
+      <p style="font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 20px;">Configura tus datos para personalizar límites y restricciones nutricionales.</p>
+      
+      <form id="user-config-form">
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 12px; display: block; margin-bottom: 5px;">Edad:</label>
+          <input type="number" id="u-age" required placeholder="Ej. 16" style="width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--card-border); color: var(--text); border-radius: 8px;">
         </div>
 
-        <!-- CONTENIDO -->
-        <div class="content">
-            
-            <!-- VISTA 1: SIMULADOR AMPLIADO -->
-            <div id="vista-sim" class="game-view active">
-                <div class="sim-layout">
-                    <div>
-                        <div class="filter-buttons">
-                            <button class="filter-btn active" onclick="filtrarAlimentos('todos', this)">Todos</button>
-                            <button class="filter-btn" onclick="filtrarAlimentos('bebida', this)">🥤 Bebidas</button>
-                            <button class="filter-btn" onclick="filtrarAlimentos('chatarra', this)">🍟 Chatarra</button>
-                            <button class="filter-btn" onclick="filtrarAlimentos('saludable', this)">🍎 Saludables</button>
-                        </div>
-                        <div class="food-grid" id="food-grid-container"></div>
-                    </div>
-
-                    <div class="detail-panel">
-                        <div class="detail-header">
-                            <div class="detail-icon" id="det-icon">🥤</div>
-                            <div>
-                                <h2 id="det-nombre" style="margin:0 0 4px 0; font-size: 1.1rem;">Gaseosa Regular</h2>
-                                <span id="det-tag" style="font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: bold; background: var(--accent); color: white;">ALTO IMPACTO</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-bars">
-                            <div class="stat-row">
-                                <div class="stat-info"><span>⚡ Pico de Glucosa</span><span id="val-glu">95%</span></div>
-                                <div class="bar-bg"><div class="bar-fill" id="fill-glu" style="background: var(--accent);"></div></div>
-                            </div>
-                            <div class="stat-row">
-                                <div class="stat-info"><span>🧠 Rendimiento Cognitivo (Cerebro)</span><span id="val-cerebro">20%</span></div>
-                                <div class="bar-bg"><div class="bar-fill" id="fill-cerebro" style="background: var(--accent);"></div></div>
-                            </div>
-                            <div class="stat-row">
-                                <div class="stat-info"><span>🔥 Trabajo Hepático / Digestivo</span><span id="val-higado">90%</span></div>
-                                <div class="bar-bg"><div class="bar-fill" id="fill-higado" style="background: var(--accent);"></div></div>
-                            </div>
-                        </div>
-
-                        <div class="info-boxes">
-                            <div class="info-box warning" id="box-restriccion">
-                                <h4>⚠️ Restricciones:</h4>
-                                <span id="txt-restriccion" style="font-size:0.7rem;">Evitar en personas con resistencia a la insulina o diabetes.</span>
-                            </div>
-                            <div class="info-box">
-                                <h4>🔬 Efecto Científico:</h4>
-                                <span id="txt-ciencia" style="font-size:0.7rem;">Satura el metabolismo y genera somnolencia posterior.</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VISTA 2: TEST CIENTÍFICO (PANTALLA COMPLETA) -->
-            <div id="vista-test" class="game-view">
-                <div class="test-container">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
-                            <span id="test-counter">Pregunta 1 de 4</span>
-                            <span id="test-score">Puntaje: 0 pts</span>
-                        </div>
-                        <div class="test-question" id="test-pregunta">Cargando pregunta del test...</div>
-                        <div class="test-options" id="test-options"></div>
-                    </div>
-                    <div>
-                        <div id="test-feedback" style="font-size: 0.85rem; text-align: center; min-height: 25px; font-weight: bold; margin-bottom: 5px;"></div>
-                        <button class="action-btn" id="test-next-btn" onclick="siguientePreguntaTest()">Siguiente Pregunta →</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VISTA 3: DIETA Y RESTRICCIONES -->
-            <div id="vista-dieta" class="game-view">
-                <div class="diet-container">
-                    <div class="diet-card">
-                        <h3>🥗 Dieta Ideal para Estudiantes (Alto Rendimiento Mental)</h3>
-                        <ul>
-                            <li><strong>Desayuno Enérgico:</strong> Huevos revueltos (proteína), palta (grasas saludables) y pan integral. Evita azúcares refinadas para no tener somnolencia en clases.</li>
-                            <li><strong>Snack Escolar:</strong> Fruta fresca con fibra (manzana, plátano de seda) y un puñado de frutos secos (almendras o pecanas) que estimulan la memoria y sinapsis.</li>
-                            <li><strong>Hidratación Clave:</strong> Beber agua pura de forma constante. La deshidratación del 1% reduce la concentración escolar en un 10%.</li>
-                        </ul>
-                    </div>
-
-                    <div class="diet-card">
-                        <h3>⚠️ Restricciones y Alertas Médicas Frecuentes</h3>
-                        <ul>
-                            <li><strong>Resistencia a la Insulina / Diabetes:</strong> Restricción total de azúcares libres, gaseosas, néctares comerciales y exceso de harinas refinadas (queques, galletas rellenas).</li>
-                            <li><strong>Hipertensión Arterial:</strong> Evitar ultraprocesados con alto contenido de sodio como papas de bolsa y comida chatarra frita con exceso de sal refinada.</li>
-                            <li><strong>Problemas Digestivos / Gastritis:</strong> Evitar frituras pesadas (salchipapa, chifles aceitosos) que ralentizan el vaciamiento gástrico y generan acidez.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 12px; display: block; margin-bottom: 5px;">Restricciones o Alergias:</label>
+          <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
+            <label><input type="checkbox" name="restriction" value="lactosa"> Intolerancia a la Lactosa</label>
+            <label><input type="checkbox" name="restriction" value="gluten"> Sensibilidad al Gluten / Celíaco</label>
+            <label><input type="checkbox" name="restriction" value="azucar"> Dieta Baja en Azúcares (Diabetes / Cuidado)</label>
+            <label><input type="checkbox" name="restriction" value="hipertension"> Dieta Baja en Sodio (Hipertensión)</label>
+          </div>
         </div>
+
+        <button type="submit" style="width: 100%; background: var(--primary); color: #022c22; border: none; padding: 12px; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 10px;">Comenzar Mi Panel</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+      <div id="user-status-tag" style="font-size: 13px; background: var(--card-bg); border: 1px solid var(--primary); padding: 8px 14px; border-radius: 10px;">
+        👤 Perfil no configurado
+      </div>
+      <button onclick="document.body.classList.toggle('light-mode')" style="background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: bold;">
+        🌓 Cambiar Tema
+      </button>
     </div>
 
-    <script>
-        // --- BASE DE DATOS DE ALIMENTOS AMPLIADA ---
-        const alimentosDB = {
-            gaseosa: { nombre: "Gaseosa Regular (500ml)", cat: "bebida", icono: "🥤", tag: "ALTO IMPACTO", glu: 95, cerebro: 20, higado: 90, restriccion: "Evitar en diabetes, obesidad y resistencia a la insulina.", ciencia: "Fructosa líquida directa al hígado; genera picos hiperglucémicos y fatiga posterior." },
-            nectar: { nombre: "Jugo en Caja / Néctar", cat: "bebida", icono: "🧃", tag: "AZÚCAR OCULTO", glu: 85, cerebro: 30, higado: 80, restriccion: "No apto para dietas bajas en azúcar; contiene jarabe refinado.", ciencia: "Falsa apariencia saludable; carece de la fibra de la fruta natural." },
-            energizante: { nombre: "Bebida Energizante", cat: "bebida", icono: "⚡", tag: "ESTIMULANTE ALTO", glu: 90, cerebro: 60, higado: 85, restriccion: "Prohibido en menores con problemas cardíacos o hipertensión.", ciencia: "Exceso de cafeína y taurina que sobreestimulan el sistema nervioso central." },
-            agua: { nombre: "Agua Pura", cat: "bebida", icono: "💧", tag: "ÓPTIMO", glu: 0, cerebro: 100, higado: 0, restriccion: "Sin restricciones. Es vital para todo organismo.", ciencia: "Mantiene el volumen sanguíneo y optimiza la transmisión de impulsos eléctricos neuronales." },
-            
-            salchipapa: { nombre: "Salchipapa Escolar", cat: "chatarra", icono: "🌭", tag: "GRASAS Y SODIO", glu: 70, cerebro: 25, higado: 85, restriccion: "Restringir en hipertensión y problemas gástricos/acidez.", ciencia: "Alto contenido de grasas saturadas y sodio que elevan temporalmente la presión arterial." },
-            papas: { nombre: "Papas Fritas de Bolsa", cat: "chatarra", icono: "🍟", tag: "GRASAS TRANS", glu: 60, cerebro: 30, higado: 75, restriccion: "Evitar en colesterol alto y dietas de control calórico.", ciencia: "Aceites vegetales recalentados que generan compuestos inflamatorios y digestión lenta." },
-            queque: { nombre: "Queque o Bizcocho", cat: "chatarra", icono: "🥮", tag: "HARINAS Y AZÚCAR", glu: 90, cerebro: 25, higado: 80, restriccion: "Evitar en control de glucosa y sobrepeso.", ciencia: "Harinas refinadas que provocan picos de insulina seguidos de somnolencia escolar." },
-            galletas: { nombre: "Galletas Rellenas", cat: "chatarra", icono: "🍪", tag: "CALORÍAS VACÍAS", glu: 85, cerebro: 30, higado: 75, restriccion: "Restringir en niños y personas con resistencia insulínica.", ciencia: "Estimulan la liberación rápida de dopamina, generando antojos adictivos." },
+    <header>
+      <div class="logo">🥗 NutriDash PRO</div>
+      <div class="subtitle">Control de calorías, información nutricional, límites por edad y alertas de restricciones.</div>
+    </header>
 
-            manzana: { nombre: "Manzana Fresca", cat: "saludable", icono: "🍎", tag: "FIBRA Y PECTINA", glu: 30, cerebro: 95, higado: 10, restriccion: "Sin restricciones generales. Excelente para todos.", ciencia: "La pectina enlentece la absorción de azúcares, manteniendo energía estable para el estudio." },
-            platano: { nombre: "Plátano de Seda", cat: "saludable", icono: "🍌", tag: "POTASIO Y ENERGÍA", glu: 45, cerebro: 90, higado: 15, restriccion: "Precaución en insuficiencia renal severa por el potasio.", ciencia: "Carbohidratos de asimilación limpia y magnesio que previenen los calambres y fatiga mental." },
-            pan_palta: { nombre: "Pan Integral con Palta", cat: "saludable", icono: "🥑", tag: "GRASAS BUENAS", glu: 35, cerebro: 100, higado: 10, restriccion: "Apto para la mayoría; moderar porciones en obesidad.", ciencia: "Ácidos grasos monoinsaturados ideales para la estructura y fluidez de las membranas neuronales." }
-        };
+    <div class="controls-bar">
+      <input type="text" id="searchInput" class="search-box" placeholder="Buscar alimento o bebida..." oninput="filtrarAlimentos()">
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
+        <button class="tab-btn" onclick="filtrarCategoria('comida', this)">Comidas</button>
+        <button class="tab-btn" onclick="filtrarCategoria('bebida', this)">Bebidas</button>
+        <button class="tab-btn" onclick="filtrarCategoria('snack', this)">Snacks y Postres</button>
+      </div>
+    </div>
 
-        function renderizarAlimentos(filtro) {
-            const grid = document.getElementById('food-grid-container');
-            grid.innerHTML = '';
-            
-            for (const [id, item] of Object.entries(alimentosDB)) {
-                if (filtro === 'todos' || item.cat === filtro) {
-                    const card = document.createElement('div');
-                    card.className = `food-card-mini ${id === 'gaseosa' ? 'active' : ''}`;
-                    card.id = `food-${id}`;
-                    card.innerHTML = `<span>${item.icono}</span><p>${item.nombre.split(' ')[0]}</p>`;
-                    card.onclick = () => seleccionarAlimento(id);
-                    grid.appendChild(card);
-                }
+    <div id="alimentosContainer" class="grid">
+      <!-- Generado por JS -->
+    </div>
+
+    <button class="btn-action" onclick="analizarDietaSeleccionada()">📊 Generar Informe Nutricional y Análisis de Límites</button>
+  </div>
+
+  <!-- Modal de Resultados -->
+  <div id="reportModal" class="modal-overlay" onclick="if(event.target === this) cerrarModal()">
+    <div class="modal-content">
+      <button class="close-btn" onclick="cerrarModal()">&times;</button>
+      <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 15px; color: var(--primary);">📋 Informe Nutricional Personalizado</h3>
+      <div id="reportContent"></div>
+    </div>
+  </div>
+
+  <script>
+    let usuarioEdad = 16;
+    let restricciones = [];
+    const seleccionados = new Set();
+
+    const baseAlimentos = [
+      { id: 'fettuccine', cat: 'comida', icon: '🍝', nombre: 'Fettuccine Alfredo', kcal: 620, proteinas: '18g', carbos: '75g', grasas: '28g', maxEdad: 'Máx. 2 porciones semanales (alto en grasas saturadas)', restricciones: ['gluten', 'lactosa'] },
+      { id: 'manzana_pie', cat: 'snack', icon: '🥧', nombre: 'Pie de Manzana (Sin Horno)', kcal: 340, proteinas: '4g', carbos: '52g', grasas: '14g', maxEdad: 'Máx. 1 porción diaria (contenido de azúcares)', restricciones: ['gluten', 'azucar', 'lactosa'] },
+      { id: 'lemon_pie', cat: 'snack', icon: '🍋', nombre: 'Crema de Limón para Pie', kcal: 280, proteinas: '5g', carbos: '42g', grasas: '10g', maxEdad: 'Máx. 1 porción diaria', restricciones: ['azucar', 'lactosa'] },
+      { id: 'agua', cat: 'bebida', icon: '💧', nombre: 'Agua Pura', kcal: 0, proteinas: '0g', carbos: '0g', grasas: '0g', maxEdad: 'Sin límite (Recomendado 2L diarios)', restricciones: [] },
+      { id: 'energizante', cat: 'bebida', icon: '⚡', nombre: 'Bebida Energizante', kcal: 110, proteinas: '0g', carbos: '28g', grasas: '0g', maxEdad: 'Máx. 1 lata diaria (menores de 18 años evitar)', restricciones: ['azucar'] },
+      { id: 'hamburguesa', cat: 'comida', icon: '🍔', nombre: 'Comida Chatarra / Burger', kcal: 750, proteinas: '30g', carbos: '65g', grasas: '40g', maxEdad: 'Máx. 1 porción quincenal', restricciones: ['gluten', 'hipertension', 'lactosa'] },
+      { id: 'ensalada', cat: 'comida', icon: '🥗', nombre: 'Ensalada Fresca de Vegetales', kcal: 150, proteinas: '4g', carbos: '12g', grasas: '8g', maxEdad: 'Sin límite diario', restricciones: [] },
+      { id: 'jugo_fruta', cat: 'bebida', icon: '🧃', nombre: 'Jugo Natural de Fruta', kcal: 120, proteinas: '1g', carbos: '29g', grasas: '0g', maxEdad: 'Máx. 2 vasos diarios (fructosa libre)', restricciones: ['azucar'] }
+    ];
+
+    document.getElementById('user-config-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      usuarioEdad = parseInt(document.getElementById('u-age').value) || 16;
+      restricciones = Array.from(document.querySelectorAll('input[name="restriction"]:checked')).map(cb => cb.value);
+      
+      document.getElementById('profile-modal').style.display = 'none';
+      let restTxt = restricciones.length > 0 ? restricciones.join(', ') : 'Ninguna';
+      document.getElementById('user-status-tag').innerHTML = `👤 Edad: ${usuarioEdad} años | Restricciones: <b>${restTxt}</b>`;
+      renderAlimentos(baseAlimentos);
+    });
+
+    function renderAlimentos(lista) {
+      const container = document.getElementById('alimentosContainer');
+      container.innerHTML = '';
+
+      lista.forEach(item => {
+        let esIncompatible = false;
+        let razonIncompatible = "";
+        
+        item.restricciones.forEach(r => {
+          if (restricciones.includes(r)) {
+            esIncompatible = true;
+            razonIncompatible = `⚠️ Alerta: Contiene ${r} (Restringido en tu perfil)`;
+          }
+        });
+
+        const card = document.createElement('div');
+        card.className = `card ${seleccionados.has(item.id) ? 'selected' : ''}`;
+        card.onclick = () => toggleSeleccion(item.id);
+
+        card.innerHTML = `
+          <div>
+            <div class="card-top">
+              <div class="card-icon">${item.icon}</div>
+              <div>
+                <div class="card-title">${item.nombre}</div>
+                <div class="badge-kcal">🔥 ${item.kcal} kcal</div>
+              </div>
+            </div>
+            <div class="nutrition-mini">
+              <b>Proteínas:</b> ${item.proteinas} | <b>Carbos:</b> ${item.carbos} | <b>Grasas:</b> ${item.grasas}<br>
+              <b>Límite recomendado:</b> ${item.maxEdad}
+              ${esIncompatible ? `<br><span style="color: #ef4444; font-weight: bold;">${razonIncompatible}</span>` : ''}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleSeleccion(id) {
+      if (seleccionados.has(id)) {
+        seleccionados.delete(id);
+      } else {
+        seleccionados.add(id);
+      }
+      renderAlimentos(baseAlimentos);
+    }
+
+    function filtrarCategoria(cat, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      let filtrados = baseAlimentos.filter(item => {
+        const matchCat = cat === 'todos' || item.cat === cat;
+        const matchQuery = item.nombre.toLowerCase().includes(query);
+        return matchCat && matchQuery;
+      });
+      renderAlimentos(filtrados);
+    }
+
+    function filtrarAlimentos() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      let filtrados = baseAlimentos.filter(item => item.nombre.toLowerCase().includes(query));
+      renderAlimentos(filtrados);
+    }
+
+    function analizarDietaSeleccionada() {
+      const modal = document.getElementById('reportModal');
+      const content = document.getElementById('reportContent');
+
+      if (seleccionados.size === 0) {
+        content.innerHTML = '<p style="color: var(--text-muted);">Por favor, selecciona al menos un alimento o bebida para generar tu informe nutricional.</p>';
+        modal.classList.add('active');
+        return;
+      }
+
+      let totalKcal = 0;
+      let alertasRestriccion = [];
+      let recomendacionesEdadHTML = "";
+
+      seleccionados.forEach(id => {
+        const item = baseAlimentos.find(a => a.id === id);
+        if (item) {
+          totalKcal += item.kcal;
+          recomendacionesEdadHTML += `<div style="margin-bottom: 8px; font-size: 13.5px;"><b>${item.icon} ${item.nombre}:</b> ${item.maxEdad}</div>`;
+          
+          item.restricciones.forEach(r => {
+            if (restricciones.includes(r)) {
+              alertasRestriccion.push(`El alimento <b>${item.nombre}</b> infringe tu restricción de <b>${r}</b>.`);
             }
+          });
         }
+      });
 
-        function filtrarAlimentos(cat, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderizarAlimentos(cat);
-        }
+      let caloriasRecomendadas = usuarioEdad < 18 ? 2200 : 2000;
+      let estadoCalorias = totalKcal > caloriasRecomendadas ? "⚠️ Excede el estimado diario recomendado" : "🟢 Dentro del rango calórico estimado";
 
-        function seleccionarAlimento(id) {
-            document.querySelectorAll('.food-card-mini').forEach(c => c.classList.remove('active'));
-            const el = document.getElementById(`food-${id}`);
-            if (el) el.classList.add('active');
+      let html = `
+        <div class="summary-box">
+          <h4 style="color: var(--primary); margin-bottom: 8px;">📊 Resumen Calórico Total</h4>
+          <p style="font-size: 16px; font-weight: bold;">Total Consumido: ${totalKcal} kcal</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Referencia para tu edad (${usuarioEdad} años): ~${caloriasRecomendadas} kcal/día (${estadoCalorias})</p>
+        </div>
+      `;
 
-            const item = alimentosDB[id];
-            document.getElementById('det-icon').innerText = item.icono;
-            document.getElementById('det-nombre').innerText = item.nombre;
-            
-            const tag = document.getElementById('det-tag');
-            tag.innerText = item.tag;
-            tag.style.background = (item.cat === 'saludable') ? 'var(--success)' : (item.cat === 'bebida' && id === 'agua' ? 'var(--success)' : 'var(--accent)');
+      if (alertasRestriccion.length > 0) {
+        html += `
+          <div class="summary-box" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+            <h4 style="color: #ef4444; margin-bottom: 8px;">🚨 Alertas de Restricciones Personales</h4>
+            <ul style="padding-left: 20px; font-size: 13.5px; color: #fca5a5;">
+              ${alertasRestriccion.map(a => `<li>${a}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="summary-box" style="border-color: #10b981; background: rgba(16, 185, 129, 0.1);">
+            <h4 style="color: #10b981; margin-bottom: 8px;">✅ Restricciones Personales</h4>
+            <p style="font-size: 13.5px;">Ninguno de los alimentos seleccionados infringe tus restricciones configuradas.</p>
+          </div>
+        `;
+      }
 
-            actualizarBarraDetalle('glu', item.glu);
-            actualizarBarraDetalle('cerebro', item.cerebro, true);
-            actualizarBarraDetalle('higado', item.higado);
+      html += `
+        <div class="summary-box">
+          <h4 style="color: var(--primary); margin-bottom: 8px;">⏱️ Guía de Consumo Máximo por Edad (${usuarioEdad} años)</h4>
+          ${recomendacionesEdadHTML}
+        </div>
+      `;
 
-            document.getElementById('txt-restriccion').innerText = item.restriccion;
-            document.getElementById('txt-ciencia').innerText = item.ciencia;
-        }
+      content.innerHTML = html;
+      modal.classList.add('active');
+    }
 
-        function actualizarBarraDetalle(tipo, valor, esInverso = false) {
-            document.getElementById(`val-${tipo}`).innerText = valor + '%';
-            const fill = document.getElementById(`fill-${tipo}`);
-            fill.style.width = valor + '%';
-            
-            if (!esInverso) {
-                fill.style.background = valor > 70 ? 'var(--accent)' : (valor > 40 ? 'var(--warning)' : 'var(--success)');
-            } else {
-                fill.style.background = valor > 70 ? 'var(--success)' : (valor > 40 ? 'var(--warning)' : 'var(--accent)');
-            }
-        }
-
-        // Inicializar simulador
-        renderizarAlimentos('todos');
-        seleccionarAlimento('gaseosa');
-
-
-        // --- NAVEGACIÓN DE VISTAS ---
-        function cambiarVista(vista) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.game-view').forEach(v => v.classList.remove('active'));
-
-            if (vista === 'sim') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('vista-sim').classList.add('active');
-            } else if (vista === 'test') {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('vista-test').classList.add('active');
-                iniciarTest();
-            } else if (vista === 'dieta') {
-                document.querySelectorAll('.tab-btn')[2].classList.add('active');
-                document.getElementById('vista-dieta').classList.add('active');
-            }
-        }
-
-
-        // --- TEST CIENTÍFICO ---
-        const bancoTest = [
-            {
-                pregunta: "¿Qué sucede a nivel hormonal en el cuerpo tras consumir una gaseosa o azúcar líquida en ayunas?",
-                opciones: [
-                    { texto: "El páncreas libera insulina masivamente para retirar el exceso de glucosa en sangre.", correcta: true },
-                    { texto: "Los músculos aumentan su masa instantáneamente sin esfuerzo.", correcta: false },
-                    { texto: "El cerebro entra en estado de reposo profundo o sueño REM.", correcta: false }
-                ]
-            },
-            {
-                pregunta: "¿Por qué un estudiante debe evitar consumir papas fritas o salchipapa antes de un examen importante?",
-                opciones: [
-                    { texto: "Porque las grasas pesadas desvían el flujo sanguíneo hacia el estómago, generando somnolencia.", correcta: true },
-                    { texto: "Porque incrementan la velocidad de lectura un 200%.", correcta: false },
-                    { texto: "Porque activan de inmediato la memoria fotográfica a largo plazo.", correcta: false }
-                ]
-            },
-            {
-                pregunta: "¿Cuál es el rol principal de la pectina presente en una manzana fresca?",
-                opciones: [
-                    { texto: "Enlentecer la digestión y estabilizar los niveles de energía en la sinapsis.", correcta: true },
-                    { texto: "Bloquear por completo la absorción de cualquier nutriente.", correcta: false },
-                    { texto: "Transformar el agua celular en energía cinética directa.", correcta: false }
-                ]
-            },
-            {
-                pregunta: "¿Qué restricción médica principal existe frente al consumo frecuente de alimentos ultraprocesados ricos en sodio?",
-                opciones: [
-                    { texto: "Riesgo de hipertensión arterial y sobrecarga en el sistema cardiovascular.", correcta: true },
-                    { texto: "Pérdida absoluta temporal de la visión periférica.", correcta: false },
-                    { texto: "Aumento drástico de la flexibilidad muscular.", correcta: false }
-                ]
-            }
-        ];
-
-        let testActuales = [];
-        let indexTest = 0;
-        let puntajeTest = 0;
-
-        function iniciarTest() {
-            testActuales = [...bancoTest].sort(() => Math.random() - 0.5);
-            indexTest = 0;
-            puntajeTest = 0;
-            cargarPreguntaTest();
-        }
-
-        function cargarPreguntaTest() {
-            if (indexTest >= testActuales.length) {
-                document.getElementById('vista-test').innerHTML = `
-                    <div class="test-container" style="text-align: center; justify-content: center;">
-                        <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
-                        <h2 style="margin: 0 0 10px 0;">¡Test Científico Completado!</h2>
-                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">Puntaje total obtenido: <strong>${puntajeTest} de ${testActuales.length * 100} pts</strong></p>
-                        <button class="action-btn" style="display:block;" onclick="reiniciarApp()">Reiniciar Test 🔄</button>
-                    </div>
-                `;
-                return;
-            }
-
-            const p = testActuales[indexTest];
-            document.getElementById('test-counter').innerText = `Pregunta ${indexTest + 1} de ${testActuales.length}`;
-            document.getElementById('test-score').innerText = `Puntaje: ${puntajeTest} pts`;
-            document.getElementById('test-pregunta').innerText = p.pregunta;
-            document.getElementById('test-feedback').innerText = "";
-            document.getElementById('test-next-btn').style.display = 'none';
-
-            const opcionesMezcladas = [...p.opciones].sort(() => Math.random() - 0.5);
-            const opContainer = document.getElementById('test-options');
-            opContainer.innerHTML = '';
-
-            opcionesMezcladas.forEach(op => {
-                const btn = document.createElement('button');
-                btn.className = 'test-option';
-                btn.innerText = op.texto;
-                btn.onclick = () => verificarRespuestaTest(op.correcta, btn);
-                opContainer.appendChild(btn);
-            });
-        }
-
-        function verificarRespuestaTest(esCorrecta, boton) {
-            const botones = document.querySelectorAll('#vista-test .test-option');
-            botones.forEach(b => b.disabled = true);
-
-            const feedback = document.getElementById('test-feedback');
-            if (esCorrecta) {
-                boton.classList.add('correct');
-                feedback.style.color = 'var(--success)';
-                feedback.innerText = "¡Correcto! Análisis científico acertado.";
-                puntajeTest += 100;
-            } else {
-                boton.classList.add('wrong');
-                feedback.style.color = 'var(--accent)';
-                feedback.innerText = "¡Incorrecto! Revisa los efectos metabólicos.";
-                botones.forEach(b => {
-                    const p = testActuales[indexTest];
-                    const original = p.opciones.find(o => o.texto === b.innerText);
-                    if (original && original.correcta) {
-                        b.classList.add('correct');
-                    }
-                });
-            }
-
-            document.getElementById('test-score').innerText = `Puntaje: ${puntajeTest} pts`;
-            document.getElementById('test-next-btn').style.display = 'block';
-        }
-
-        function siguientePreguntaTest() {
-            indexTest++;
-            cargarPreguntaTest();
-        }
-
-        function reiniciarApp() {
-            location.reload();
-        }
-    </script>
+    function cerrarModal() {
+      document.getElementById('reportModal').classList.remove('active');
+    }
+  </script>
 </body>
 </html>
