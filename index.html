@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NutriDash - Feria de Ciencia</title>
     <style>
         :root {
@@ -17,6 +17,7 @@
         }
 
         html, body {
+            width: 100vw;
             height: 100vh;
             margin: 0;
             padding: 0;
@@ -24,6 +25,7 @@
             background-color: var(--bg);
             color: var(--text);
             overflow: hidden;
+            box-sizing: border-box;
         }
 
         .app-container {
@@ -33,31 +35,30 @@
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
-            max-width: 480px;
-            margin: 0 auto;
-            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+            max-width: 100%;
+            margin: 0;
         }
 
         header {
             background: linear-gradient(135deg, #0284c7, #2563eb);
             color: white;
-            padding: 12px 15px;
+            padding: 10px 15px;
             text-align: center;
             flex-shrink: 0;
         }
 
         header h1 {
             margin: 0;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
         }
 
         header p {
             margin: 2px 0 0 0;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             opacity: 0.85;
         }
 
-        /* Pestañas superiores para cambiar entre Simulador y Minijuegos */
+        /* Pestañas de navegación superiores */
         .nav-tabs {
             display: flex;
             background: #0b1120;
@@ -75,7 +76,7 @@
             font-weight: 600;
             font-size: 0.75rem;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 6px;
             transition: all 0.2s;
         }
 
@@ -84,8 +85,9 @@
             color: #0f172a;
         }
 
+        /* Contenedor principal de pantallas */
         .content {
-            padding: 12px;
+            padding: 10px;
             flex: 1;
             overflow-y: auto;
             box-sizing: border-box;
@@ -94,7 +96,7 @@
         }
 
         .section-title {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             color: var(--text-muted);
             margin-bottom: 6px;
@@ -107,7 +109,7 @@
             overflow-x: auto;
             padding-bottom: 4px;
             flex-shrink: 0;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .snack-chip {
@@ -119,7 +121,6 @@
             cursor: pointer;
             font-size: 0.75rem;
             font-weight: 600;
-            transition: all 0.2s;
         }
 
         .snack-chip.active {
@@ -138,12 +139,12 @@
         }
 
         .sim-icon {
-            font-size: 2.2rem;
+            font-size: 2rem;
             margin-bottom: 2px;
         }
 
         .stat-group {
-            margin-top: 8px;
+            margin-top: 6px;
             text-align: left;
         }
 
@@ -157,7 +158,7 @@
 
         .progress-bar-bg {
             width: 100%;
-            height: 7px;
+            height: 6px;
             background: #334155;
             border-radius: 4px;
             overflow: hidden;
@@ -171,16 +172,28 @@
 
         .dynamic-info {
             background: #1e293b;
-            padding: 8px 10px;
+            padding: 8px;
             border-radius: 6px;
             font-size: 0.75rem;
             line-height: 1.3;
             border-left: 4px solid var(--primary);
             text-align: left;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
-        /* Estilos de Juegos / Quiz */
+        /* Vistas de Juegos */
+        .game-view {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .game-view.active {
+            display: flex;
+        }
+
         .game-card {
             background: #0f172a;
             border-radius: 12px;
@@ -190,6 +203,7 @@
             flex-direction: column;
             flex: 1;
             justify-content: space-between;
+            box-sizing: border-box;
         }
 
         .game-question {
@@ -211,12 +225,7 @@
             margin-bottom: 6px;
             width: 100%;
             text-align: left;
-            transition: background 0.2s;
             box-sizing: border-box;
-        }
-
-        .game-option:hover {
-            background: #475569;
         }
 
         .game-option.correct {
@@ -254,19 +263,14 @@
             background: #334155;
             border: 2px solid transparent;
             border-radius: 10px;
-            padding: 12px 8px;
+            padding: 15px 8px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .battle-card:hover {
             border-color: var(--primary);
             background: #3b82f622;
-        }
-
-        .hidden {
-            display: none !important;
         }
     </style>
 </head>
@@ -290,7 +294,7 @@
         <div class="content">
             
             <!-- VISTA 1: SIMULADOR -->
-            <div id="vista-sim" style="display: flex; flex-direction: column; gap: 8px;">
+            <div id="vista-sim" class="game-view active">
                 <div class="section-title">Selecciona un alimento:</div>
                 <div class="snack-scroller" id="chips-container"></div>
 
@@ -318,38 +322,38 @@
                 <div class="dynamic-info" id="sim-ciencia">Cargando análisis...</div>
             </div>
 
-            <!-- VISTA 2: TRIVIA FLASH (Preguntas Variadas) -->
-            <div id="vista-quiz" class="hidden" style="display: none; flex-direction: column; flex: 1;">
+            <!-- VISTA 2: TRIVIA FLASH -->
+            <div id="vista-quiz" class="game-view">
                 <div class="game-card">
                     <div>
                         <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px;">
-                            <span id="quiz-counter">Pregunta 1/4</span>
+                            <span id="quiz-counter">Pregunta 1/3</span>
                             <span id="quiz-score">Puntaje: 0 pts</span>
                         </div>
-                        <div class="game-question" id="quiz-pregunta">Pregunta...</div>
+                        <div class="game-question" id="quiz-pregunta">Cargando pregunta...</div>
                         <div id="quiz-options"></div>
                     </div>
                     <button class="action-btn" id="quiz-next-btn" onclick="siguientePreguntaQuiz()">Siguiente Pregunta →</button>
                 </div>
             </div>
 
-            <!-- VISTA 3: MINIJUEGO BATALLA NUTRICIONAL -->
-            <div id="vista-batalla" class="hidden" style="display: none; flex-direction: column; flex: 1;">
+            <!-- VISTA 3: BATALLA NUTRICIONAL -->
+            <div id="vista-batalla" class="game-view">
                 <div class="game-card">
                     <div>
                         <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px;">
                             <span id="batalla-counter">Reto 1/3</span>
                             <span id="batalla-score">Puntaje: 0 pts</span>
                         </div>
-                        <div class="game-question" id="batalla-pregunta" style="text-align: center; margin-bottom: 12px;">¿Cuál de estos dos alimentos es más saludable para tu cerebro?</div>
+                        <div class="game-question" id="batalla-pregunta" style="text-align: center;">¿Cuál de estos alimentos es más saludable para tu cerebro?</div>
                         
                         <div class="battle-arena">
                             <div class="battle-card" id="card-A" onclick="elegirBatalla('A')">
-                                <div id="bat-icon-A" style="font-size: 2rem; margin-bottom: 4px;">🍎</div>
+                                <div id="bat-icon-A" style="font-size: 2.2rem; margin-bottom: 4px;">🍎</div>
                                 <div id="bat-name-A" style="font-size: 0.75rem; font-weight: bold;">Manzana</div>
                             </div>
                             <div class="battle-card" id="card-B" onclick="elegirBatalla('B')">
-                                <div id="bat-icon-B" style="font-size: 2rem; margin-bottom: 4px;">🥤</div>
+                                <div id="bat-icon-B" style="font-size: 2.2rem; margin-bottom: 4px;">🥤</div>
                                 <div id="bat-name-B" style="font-size: 0.75rem; font-weight: bold;">Gaseosa</div>
                             </div>
                         </div>
@@ -363,7 +367,7 @@
     </div>
 
     <script>
-        // --- 1. DATOS DEL SIMULADOR ---
+        // --- 1. SIMULADOR ---
         const simData = {
             gaseosa: { nombre: "Gaseosa Regular (500ml)", icono: "🥤", tag: "ALTO IMPACTO", tagColor: "var(--accent)", glucosa: 95, mente: 20, higado: 90, ciencia: "⚠️ <strong>Alerta Metabólica:</strong> La avalancha de fructosa líquida satura el hígado y provoca un bajón de energía cerebral." },
             papas: { nombre: "Papas Fritas de Bolsa", icono: "🍟", tag: "GRASAS PESADAS", tagColor: "var(--warning)", glucosa: 60, mente: 30, higado: 75, ciencia: "🍟 <strong>Digestión Lenta:</strong> Desvía flujo sanguíneo del cerebro hacia el estómago, generando pesadez." },
@@ -376,7 +380,6 @@
             agua: { nombre: "Agua Pura", icono: "💧", tag: "HIDRATACIÓN ÓPTIMA", tagColor: "var(--success)", glucosa: 0, mente: 100, higado: 0, ciencia: "💧 <strong>Claridad Mental:</strong> Mantiene el volumen sanguíneo adecuado y la correcta transmisión eléctrica." }
         };
 
-        // Renderizar chips del simulador
         const chipsContainer = document.getElementById('chips-container');
         for (const [id, data] of Object.entries(simData)) {
             const chip = document.createElement('div');
@@ -414,29 +417,27 @@
         seleccionarSim('gaseosa');
 
 
-        // --- 2. GESTIÓN DE VISTAS (Pestañas) ---
+        // --- 2. CONTROL DE VISTAS (Pestañas) ---
         function cambiarVista(vista) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('vista-sim').classList.add('hidden');
-            document.getElementById('vista-quiz').classList.add('hidden');
-            document.getElementById('vista-batalla').classList.add('hidden');
+            document.querySelectorAll('.game-view').forEach(v => v.classList.remove('active'));
 
             if (vista === 'sim') {
                 document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('vista-sim').classList.remove('hidden');
+                document.getElementById('vista-sim').classList.add('active');
             } else if (vista === 'quiz') {
                 document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('vista-quiz').classList.remove('hidden');
+                document.getElementById('vista-quiz').classList.add('active');
                 iniciarQuiz();
             } else if (vista === 'batalla') {
                 document.querySelectorAll('.tab-btn')[2].classList.add('active');
-                document.getElementById('vista-batalla').classList.remove('hidden');
+                document.getElementById('vista-batalla').classList.add('active');
                 iniciarBatalla();
             }
         }
 
 
-        // --- 3. BANCO DE PREGUNTAS VARIADAS (Trivia Flash) ---
+        // --- 3. TRIVIA FLASH (Preguntas Variadas) ---
         const bancoPreguntas = [
             {
                 pregunta: "¿Qué órgano libera insulina rápidamente al detectar un pico de azúcar en sangre?",
@@ -453,10 +454,6 @@
             {
                 pregunta: "¿Cuál es el principal efecto físico de consumir gaseosa o azúcar líquida de golpe?",
                 opciones: [{ texto: "Pico de glucosa e hipoglucemia temporal", correcta: true }, { texto: "Aumento instantáneo de masa muscular", correcta: false }, { texto: "Oxigenación pulmonar acelerada", correcta: false }]
-            },
-            {
-                pregunta: "¿Qué componente de la manzana ayuda a proteger a las neuronas del estrés oxidativo?",
-                opciones: [{ texto: "Antioxidantes y pectina", correcta: true }, { texto: "Aceites hidrogenados", correcta: false }, { texto: "Sodio refinado", correcta: false }]
             }
         ];
 
@@ -465,7 +462,6 @@
         let puntajeQuiz = 0;
 
         function iniciarQuiz() {
-            // Mezclar preguntas aleatoriamente
             quizActuales = [...bancoPreguntas].sort(() => Math.random() - 0.5).slice(0, 3);
             indexQuiz = 0;
             puntajeQuiz = 0;
@@ -476,7 +472,7 @@
             if (indexQuiz >= quizActuales.length) {
                 document.getElementById('vista-quiz').innerHTML = `
                     <div class="game-card" style="text-align: center; justify-content: center;">
-                        <div style="font-size: 3rem; margin-bottom: 5px;">🏆</div>
+                        <div style="font-size: 2.5rem; margin-bottom: 5px;">🏆</div>
                         <h3 style="margin: 0 0 5px 0;">¡Trivia Completada!</h3>
                         <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px;">Puntaje final: <strong>${puntajeQuiz} pts</strong></p>
                         <button class="action-btn" style="display:block;" onclick="reiniciarApp()">Jugar de Nuevo 🔄</button>
@@ -491,7 +487,6 @@
             document.getElementById('quiz-pregunta').innerText = p.pregunta;
             document.getElementById('quiz-next-btn').style.display = 'none';
 
-            // Mezclar opciones también para que varíen de posición
             const opcionesMezcladas = [...p.opciones].sort(() => Math.random() - 0.5);
             const opcionesContainer = document.getElementById('quiz-options');
             opcionesContainer.innerHTML = '';
@@ -515,7 +510,6 @@
             } else {
                 boton.classList.add('wrong');
                 botones.forEach(b => {
-                    // Buscar la correcta original en el array mezclado
                     const p = quizActuales[indexQuiz];
                     const opOriginal = p.opciones.find(o => o.texto === b.innerText);
                     if (opOriginal && opOriginal.correcta) {
@@ -534,12 +528,12 @@
         }
 
 
-        // --- 4. MINIJUEGO: BATALLA NUTRICIONAL ---
+        // --- 4. BATALLA NUTRICIONAL ---
         const bancoBatallas = [
-            { a: { id: "manzana", nombre: "Manzana", icono: "🍎", sano: true }, b: { id: "gaseosa", nombre: "Gaseosa", icono: "🥤", sano: false } },
-            { a: { id: "platano", nombre: "Plátano", icono: "🍌", sano: true }, b: { id: "papas", nombre: "Papas Fritas", icono: "🍟", sano: false } },
-            { a: { id: "agua", nombre: "Agua Pura", icono: "💧", sano: true }, b: { id: "queque", nombre: "Queque", icono: "🥮", sano: false } },
-            { a: { id: "galletas", nombre: "Galletas", icono: "🍪", sano: false }, b: { id: "manzana", nombre: "Manzana", icono: "🍎", sano: true } }
+            { a: { nombre: "Manzana", icono: "🍎", sano: true }, b: { nombre: "Gaseosa", icono: "🥤", sano: false } },
+            { a: { nombre: "Plátano", icono: "🍌", sano: true }, b: { nombre: "Papas Fritas", icono: "🍟", sano: false } },
+            { a: { nombre: "Agua Pura", icono: "💧", sano: true }, b: { nombre: "Queque", icono: "🥮", sano: false } },
+            { a: { nombre: "Galletas", icono: "🍪", sano: false }, b: { nombre: "Manzana", icono: "🍎", sano: true } }
         ];
 
         let batallasActuales = [];
@@ -558,7 +552,7 @@
             if (indexBatalla >= batallasActuales.length) {
                 document.getElementById('vista-batalla').innerHTML = `
                     <div class="game-card" style="text-align: center; justify-content: center;">
-                        <div style="font-size: 3rem; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 2.5rem; margin-bottom: 5px;">⚡</div>
                         <h3 style="margin: 0 0 5px 0;">¡Batalla Finalizada!</h3>
                         <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px;">Puntaje de Batalla: <strong>${puntajeBatalla} pts</strong></p>
                         <button class="action-btn" style="display:block;" onclick="reiniciarApp()">Jugar de Nuevo 🔄</button>
@@ -568,7 +562,6 @@
             }
 
             const ronda = batallasActuales[indexBatalla];
-            // Aleatorizar si el sano va en A o B
             const invertir = Math.random() > 0.5;
             const itemA = invertir ? ronda.b : ronda.a;
             const itemB = invertir ? ronda.a : ronda.b;
@@ -584,7 +577,6 @@
             document.getElementById('batalla-feedback').innerText = "";
             document.getElementById('batalla-next-btn').style.display = 'none';
 
-            // Habilitar tarjetas
             document.getElementById('card-A').style.pointerEvents = 'auto';
             document.getElementById('card-B').style.pointerEvents = 'auto';
             document.getElementById('card-A').style.borderColor = 'transparent';
@@ -598,12 +590,12 @@
             const feedback = document.getElementById('batalla-feedback');
             if (eleccion === opcionGanadora) {
                 feedback.style.color = 'var(--success)';
-                feedback.innerHTML = "¡Correcto! Elegiste la opción con mayor aporte nutricional y menor impacto glucémico.";
+                feedback.innerHTML = "¡Correcto! Opción con mayor aporte nutricional.";
                 puntajeBatalla += 100;
                 document.getElementById(`card-${eleccion}`).style.borderColor = 'var(--success)';
             } else {
                 feedback.style.color = 'var(--accent)';
-                feedback.innerHTML = "¡Incorrecto! Esa opción genera mayor fatiga metabólica y picos de insulina.";
+                feedback.innerHTML = "¡Incorrecto! Esta opción genera fatiga metabólica.";
                 document.getElementById(`card-${eleccion}`).style.borderColor = 'var(--accent)';
                 document.getElementById(`card-${opcionGanadora}`).style.borderColor = 'var(--success)';
             }
